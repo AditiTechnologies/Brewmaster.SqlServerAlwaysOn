@@ -1,0 +1,445 @@
+{
+  "Name": "AD",
+  "Description": "Creates an Active Directory deployment.",
+  "Version": "0.1.0",
+  "Parameters": [
+    {
+      "Name": "VnetName",
+      "Type": "String",
+      "Description": "Name of Virtual Network",
+      "Default": "vnet"
+    },
+    {
+      "Name": "Region",
+      "Type": "String",
+      "TypeHint": "AzureRegionName",
+      "Description": "Name of Azure region."
+    },
+    {
+      "Name": "AffinityGroup",
+      "Type": "String",
+      "TypeHint": "AzureAffinityGroupName",
+      "Description": "Name of Azure affinity group."
+    },
+    {
+      "Name": "CloudService",
+      "Type": "String",
+      "TypeHint": "AzureCloudServiceName",
+      "Description": "Name of the Azure Cloud Service."
+    },
+    {
+      "Name": "DiskStore",
+      "Type": "String",
+      "TypeHint": "AzureStorageName",
+      "Description": "Name of Azure disk storage account."
+    },
+    {
+      "Name": "CloudDeploymentId",
+      "Type": "String",
+      "TypeHint": "Guid",
+      "Description": "Id of Azure cloud deployment."
+    },
+    {
+      "Name": "VMSize",
+      "Type": "String",
+      "TypeHint": "AzureRoleSize",
+      "Description": "Size of the server VMs.",
+      "Default": "Small"
+    },
+    {
+      "Name": "AdminName",
+      "Type": "String",
+      "TypeHint": "username",
+      "Description": "Name of local administrator account.",
+      "Minimum": 1.0,
+      "Maximum": 64.0
+    },
+    {
+      "Name": "AdminPassword",
+      "Type": "String",
+      "TypeHint": "password",
+      "Description": "Password of local administrator account.",
+      "MaskValue": true,
+      "Minimum": 8.0,
+      "Maximum": 127.0
+    },
+    {
+      "Name": "DSRMPassPhrase",
+      "Type": "String",
+      "TypeHint": "password",
+      "Description": "Safemode Password for domain",
+      "MaskValue": true,
+      "Minimum": 8.0,
+      "Maximum": 127.0
+    },
+    {
+      "Name": "Domain",
+      "Type": "String",
+      "TypeHint": "domain",
+      "Description": "NetBios domain name.",
+      "Minimum": 1.0,
+      "Maximum": 64.0
+    },
+    {
+      "Name": "FQDN",
+      "Type": "String",
+      "TypeHint": "domain",
+      "Description": "Fully qualified domain name",
+      "Minimum": 1.0,
+      "Maximum": 64.0
+    },
+    {
+      "Name": "ServerNamePrefix",
+      "Type": "String",
+      "Description": "Name prefix for web servers.",
+      "Default": "web",
+      "AllowedRegex": "^[a-zA-Z][a-zA-Z0-9-]{1,13}$",
+      "AllowedDescription": "Must contain 3 to 14 letters, numbers, and hyphens. Must start with a letter."
+    }
+  ],
+  "Network": {
+    "DnsServers": [
+      {
+        "Name": "ad-dns1",
+        "IPAddress": "10.0.0.4"
+      },
+      {
+        "Name": "ad-dns2",
+        "IPAddress": "10.0.0.5"
+      }
+    ],
+    "LocalSites": [],
+    "VirtualSites": [
+      {
+        "Name": "{{VnetName}}",
+        "AffinityGroup": "{{AffinityGroup}}",
+        "AddressSpace": [
+          "10.0.0.0/8"
+        ],
+        "Subnets": [
+          {
+            "Name": "ad-subnet",
+            "AddressPrefix": "10.0.0.0/24"
+          }
+        ],
+        "DnsServers": [
+          "ad-dns1",
+          "ad-dns2"
+        ],
+        "VPNClientAddressSpaces": []
+      }
+    ]
+  },
+  "AffinityGroup": {
+    "Name": "{{AffinityGroup}}",
+    "Region": "East US",
+    "Label": "DSC created affinity group"
+  },
+  "StorageAccounts": [
+    {
+      "Name": "{{DiskStore}}",
+      "AffinityGroup": "{{AffinityGroup}}",
+      "Region": "East US",
+      "Description": "A non-georedundant disk store",
+      "DisableGeoReplication": true
+    }
+  ],
+  "CloudServices": [
+    {
+      "Name": "{{CloudService}}",
+      "AffinityGroup": "{{AffinityGroup}}",
+      "Region": "East US",
+      "Description": "My AD Service",
+      "Deployment": {
+        "Name": "03d081ab-b806-45ff-ae8d-3fbce755a6d5",
+        "VirtualNetwork": "dsc-vnet",
+        "VirtualMachines": [
+          {
+            "Name": "dc1",
+            "RoleSize": "Small",
+            "Subnets": [
+              "ad-subnet"
+            ],
+            "AvailabilitySet": "ad-avs",
+            "OsVirtualDisk": {
+              "OsType": "Windows",
+              "OsImageName": "a699494373c04fc0bc8f2bb1389d6106__Windows-Server-2012-R2-*"
+            },
+            "DataVirtualDisks": [
+              {
+                "DiskId": "disk0",
+                "Lun": 0,
+                "LogicalSizeInGB": 40
+              }
+            ],
+            "WindowsConfigSet": {
+              "LocalAdminCredentialId": "DomainAdmin",
+              "EnableAutomaticUpdates": false,
+              "ChangePasswordAtLogon": false,
+              "DisableRdp": false
+            },
+            "ConfigSets": [
+              "RootDomainController"
+            ],
+            "DeploymentGroup": "ADGroup"
+          },
+          {
+            "Name": "dc2",
+            "RoleSize": "Small",
+            "Subnets": [
+              "ad-subnet"
+            ],
+            "AvailabilitySet": "ad-avs",
+            "OsVirtualDisk": {
+              "OsType": "Windows",
+              "OsImageName": "a699494373c04fc0bc8f2bb1389d6106__Windows-Server-2012-R2-*"
+            },
+            "DataVirtualDisks": [
+              {
+                "DiskId": "disk0",
+                "Lun": 0,
+                "LogicalSizeInGB": 40
+              }
+            ],
+            "WindowsConfigSet": {
+              "LocalAdminCredentialId": "DomainAdmin",
+              "EnableAutomaticUpdates": false,
+              "ChangePasswordAtLogon": false,
+              "DisableRdp": false
+            },
+            "ConfigSets": [
+              "DomainController"
+            ],
+            "DeploymentGroup": "ADGroup"
+          }
+        ],
+        "DnsServers": [
+          {
+            "Name": "DCLoopback",
+            "IPAddress": "127.0.0.1"
+          }
+        ],
+        "DiskStorageAccount": "{{DiskStore}}"
+      }
+    }
+  ],
+  "DeploymentGroups": [
+    {
+      "Name": "ADGroup",
+      "Description": "Must fully deploy AD before deploying dependant VMs."
+    }
+  ],
+  "Credentials": [
+    {
+      "Name": "DomainAdmin",
+      "UserName": "{{Domain}}\\{{AdminName}}",
+      "Password": "{{AdminPassword}}"
+    },
+    {
+      "Name": "DomainAdmin:local",
+      "UserName": "{{AdminName}}",
+      "Password": "{{AdminPassword}}"
+    },
+    {
+      "Name": "DomainJoinCred",
+      "UserName": "{{Domain}}\\{{AdminName}}",
+      "Password": "{{AdminPassword}}"
+    }
+  ],
+  "ConfigSets": [
+    {
+      "Name": "RootDomainController",
+      "Description": "Active Directory root DC",
+      "Endpoints": [],
+      "ConfigurationIds": [
+        "SetupADNode",
+        "SetupADForest"
+      ]
+    },
+    {
+      "Name": "DomainController",
+      "Description": "Active Directory child DC",
+      "Endpoints": [],
+      "ConfigurationIds": [
+        "SetupADNode",
+        "SetupADDomainController"
+      ]
+    },
+    {
+      "Name": "DomainNode",
+      "Description": "Domain node",
+      "Endpoints": [],
+      "ConfigurationIds": [
+        "DnsDependantNode"
+      ]
+    }
+  ],
+  "Configurations": [
+    {
+      "Name": "SetupADNode",
+      "Description": "Install AD Domain Services, Group Policy Management Console, and DNS.",
+      "Resources": [
+        {
+          "Credential": null,
+          "GetScript": "@{ Disks = Get-Disk; Partitions = Get-Disk | Get-Partition; }",
+          "SetScript": "\r\nFunction Format-RawDisks\r\n{\r\n    [cmdletbinding()]\r\n    param([char]$nextDriveLetter)\r\n\r\n\tforeach ($disk in Get-Disk | Where PartitionStyle -eq 'RAW')\r\n\t{\r\n\t\tWrite-Verbose \"Formatting disk [$nextDriveLetter]\"\r\n\t\t$disk | Initialize-Disk -PartitionStyle MBR -PassThru |\r\n\t\t\t\tNew-Partition -DriveLetter $nextDriveLetter -UseMaximumSize |\r\n\t\t\t\tFormat-Volume -FileSystem NTFS -Confirm:$false\r\n\r\n\t\t$nextDriveLetter = [char]([int]$nextDriveLetter + 1)\r\n\t}\r\n}\r\nFormat-RawDisks $FirstDriveLetter[0] -ErrorAction Stop",
+          "TestScript": null,
+          "Type": "Script",
+          "ImportModule": null,
+          "ImportTypeName": null,
+          "Name": "FormatRawDisks",
+          "Args": {
+            "FirstDriveLetter": "F"
+          },
+          "Nodes": [],
+          "Requires": [],
+          "Description": null
+        },
+        {
+          "Type": "WindowsFeature",
+          "ImportModule": null,
+          "ImportTypeName": null,
+          "Name": "ADDomainServices",
+          "Args": {
+            "Name": "AD-Domain-Services",
+            "Ensure": "Present",
+            "IncludeAllSubFeature": "true",
+            "LogPath": "%BrewmasterDir%\\Logs\\Install-ADDomainServices.log"
+          },
+          "Nodes": [],
+          "Requires": [],
+          "Description": null
+        },
+        {
+          "Type": "WindowsFeature",
+          "ImportModule": null,
+          "ImportTypeName": null,
+          "Name": "GroupPolicyManagementConsole",
+          "Args": {
+            "Name": "GPMC",
+            "Ensure": "Present",
+            "IncludeAllSubFeature": "true",
+            "LogPath": "%BrewmasterDir%\\Logs\\Install-GPMC.log"
+          },
+          "Nodes": [],
+          "Requires": [],
+          "Description": null
+        }
+      ],
+      "Args": {}
+    },
+    {
+      "Name": "SetupADForest",
+      "Description": "Configure this server as the first Active Directory domain controller in a new forest. See http://technet.microsoft.com/en-us/library/jj574166.aspx",
+      "Resources": [
+        {
+          "Credential": null,
+          "GetScript": "return @{Domain = Get-WmiObject Win32_NTDomain}",
+          "SetScript": "\r\nWrite-Verbose \"Creating forest [$DomainNetbiosName ($DomainName)]\"\r\nImport-Module ADDSDeployment -Verbose:$false\r\nInstall-ADDSForest -DomainName $DomainName `\r\n                   -DomainNetbiosName $DomainNetbiosName `\r\n                   -ForestMode 'Win2012' `\r\n                   -DomainMode 'Win2012' `\r\n                   -SafeModeAdministratorPassword (ConvertTo-SecureString $DSRMPassPhrase -AsPlainText -Force) `\r\n                   -InstallDns `\r\n                   -DatabasePath $DatabasePath `\r\n                   -LogPath $LogPath `\r\n                   -SysvolPath $SysvolPath `\r\n                   -Force `\r\n                   -NoRebootOnCompletion `\r\n                   -ErrorAction Stop `\r\n                   -WarningAction SilentlyContinue\r\nWrite-Verbose 'Rebooting'\r\n$global:DSCMachineStatus = 1",
+          "TestScript": "\r\n$d = Get-WmiObject Win32_NTDomain\r\nif ($d.Status -eq 'OK' -AND \r\n    $d.DnsForestName -eq $DomainName -AND \r\n    $d.DomainName -eq $DomainNetbiosName -AND \r\n    $d.DomainControllerName -eq \"\\\\$env:COMPUTERNAME\")\r\n{\r\n\tWrite-Verbose \"Domain [$DomainNetbiosName ($DomainName)] already configured.\"\r\n\treturn $true\r\n}\r\nreturn $false",
+          "Type": "Script",
+          "ImportModule": null,
+          "ImportTypeName": null,
+          "Name": "SetupForest",
+          "Args": {
+            "DomainNetbiosName": "{{Domain}}",
+            "DomainName": "{{FQDN}}",
+            "DSRMPassPhrase": "{{DSRMPassPhrase}}",
+            "DatabasePath": "F:\\NTDS",
+            "LogPath": "F:\\NTDS",
+            "SysvolPath": "F:\\SYSVOL"
+          },
+          "Nodes": [],
+          "Requires": [],
+          "Description": null
+        },
+        {
+          "Type": "Service",
+          "ImportModule": null,
+          "ImportTypeName": null,
+          "Name": "StartADWebServices",
+          "Args": {
+            "Name": "ADWS",
+            "StartupType": "Automatic",
+            "State": "Running"
+          },
+          "Nodes": [],
+          "Requires": [
+            "[Script]SetupForest"
+          ],
+          "Description": null
+        }
+      ],
+      "Args": {}
+    },
+    {
+      "Name": "SetupADDomainController",
+      "Description": "Configure this server as an additional Active Directory domain controller. See http://technet.microsoft.com/en-us/library/jj574134.aspx.",
+      "Resources": [
+        {
+          "Credential": null,
+          "GetScript": "return @{Domain = Get-WmiObject Win32_NTDomain}",
+          "SetScript": "\r\nWrite-Verbose \"Creating domain [$DomainNetbiosName ($DomainName)]\"\r\nImport-Module ADDSDeployment -Verbose:$false\r\n\r\n# Temporarily make the RootDC our DNS Server...\r\nSet-DnsClientServerAddress -InterfaceAlias 'Ethernet*' -ServerAddresses $DCRootIPAddress -Validate -ErrorAction Stop\r\n\r\nInstall-ADDSDomainController -DomainName $DomainName `\r\n                             -Credential (New-Object PsCredential($AdminUser, (ConvertTo-SecureString $AdminPass -AsPlainText -Force))) `\r\n                             -SafeModeAdministratorPassword (ConvertTo-SecureString $DSRMPassPhrase -AsPlainText -Force) `\r\n                             -InstallDns `\r\n                             -NoGlobalCatalog `\r\n                             -DatabasePath $DatabasePath `\r\n                             -LogPath $LogPath `\r\n                             -SysvolPath $SysvolPath `\r\n                             -Force `\r\n                             -NoRebootOnCompletion `\r\n                             -ErrorAction Stop `\r\n                             -WarningAction SilentlyContinue\r\n\r\n# Point the DNS server at this server...\r\nSet-DnsClientServerAddress -InterfaceAlias 'Ethernet*' -ServerAddresses '127.0.0.1' -Validate:$false\r\n\r\nWrite-Verbose 'Rebooting'\r\n$global:DSCMachineStatus = 1",
+          "TestScript": "\r\n$d = Get-WmiObject Win32_NTDomain\r\nif ($d.Status -eq 'OK' -AND \r\n    $d.DnsForestName -eq $DomainName -AND \r\n    $d.DomainName -eq $DomainNetbiosName -AND \r\n    $d.DomainControllerName -eq \"\\\\$env:COMPUTERNAME\")\r\n{\r\n\tWrite-Verbose \"Domain [$DomainNetbiosName ($DomainName)] already configured.\"\r\n\treturn $true\r\n}\r\nreturn $false",
+          "Type": "Script",
+          "ImportModule": null,
+          "ImportTypeName": null,
+          "Name": "SetupDC",
+          "Args": {
+            "DomainNetbiosName": "{{Domain}}",
+            "DomainName": "{{FQDN}}",
+            "DSRMPassPhrase": "{{DSRMPassPhrase}}",
+            "AdminUser": "{{Domain}}\\{{AdminName}}",
+            "AdminPass": "{{AdminPassword}}",
+            "DatabasePath": "F:\\NTDS",
+            "LogPath": "F:\\NTDS",
+            "SysvolPath": "F:\\SYSVOL",
+            "DCRootIPAddress": "10.0.0.4"
+          },
+          "Nodes": [],
+          "Requires": [],
+          "Description": ""
+        },
+        {
+          "Type": "Service",
+          "ImportModule": null,
+          "ImportTypeName": null,
+          "Name": "StartADWebServices",
+          "Args": {
+            "Name": "ADWS",
+            "StartupType": "Automatic",
+            "State": "Running"
+          },
+          "Nodes": [],
+          "Requires": [
+            "[Script]SetupDC"
+          ],
+          "Description": null
+        }
+      ],
+      "Args": {}
+    },
+    {
+      "Name": "DnsDependantNode",
+      "Description": "Reboots any DNS dependant nodes with Network issues. Should include any non-DNS nodes created prior to the DNS Server be installed.",
+      "Resources": [
+        {
+          "Credential": null,
+          "GetScript": "Test-NetConnection -InformationLevel Detailed",
+          "SetScript": "\r\nif (!(Test-NetConnection -InformationLevel Quiet))\r\n{\r\n    if ((Get-ItemProperty -Path HKLM:\\SOFTWARE\\Aditi\\Brewmaster\\DnsDependantNode -ea Ignore).Rebooted)\r\n    {\r\n        Write-Warning 'Already rebooted once. Skipping this time.'\r\n        return\r\n    }\r\n\r\n    Write-Verbose 'Rebooting in order to resolve network issue.'\r\n    New-Item -Path HKLM:\\SOFTWARE\\Aditi\\Brewmaster -Force | Out-Null\r\n    Set-ItemProperty -Path HKLM:\\SOFTWARE\\Aditi\\Brewmaster\\DnsDependantNode -Name Rebooted -Value 1 -Type DWord\r\n    $global:DSCMachineStatus = 1\r\n}",
+          "TestScript": "Test-NetConnection -InformationLevel Quiet",
+          "Type": "Script",
+          "ImportModule": null,
+          "ImportTypeName": null,
+          "Name": "CheckNetwork",
+          "Args": {},
+          "Nodes": [],
+          "Requires": [],
+          "Description": "Reboot if network (DNS) not working. Assumes that rebooting the VM will fix the DNS."
+        }
+      ],
+      "Args": {}
+    }
+  ]
+}
+
