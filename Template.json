@@ -1,6 +1,6 @@
 {
-  "Name": "AD",
-  "Description": "Creates an Active Directory deployment.",
+  "Name": "SqlServerAlwaysOn",
+  "Description": "Creates Sql server 2012 Always on cluster.",
   "Version": "0.1.0",
   "Parameters": [
     {
