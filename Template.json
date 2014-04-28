@@ -751,7 +751,7 @@
             "DomainAdministratorCredential": "%%New-Object PSCredential \"{{Domain}}\\{{AdminName}}\", (ConvertTo-SecureString \"{{AdminPassword}}\" -AsPlainText -Force)",
             "UserName": "{{SqlSvcAccountName}}",
             "Password": "%%New-Object PSCredential \"{{Domain}}\\{{SqlSvcAccountName}}\", (ConvertTo-SecureString \"{{SqlSvcAccountPassword}}\" -AsPlainText -Force)",
-            "Ensure": "Present",            
+            "Ensure": "Present"            
           },
           "Nodes": [ "{{SSAOCloudService}}.sql1" ],
           "Requires": [
