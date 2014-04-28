@@ -29,7 +29,7 @@
     },
 	{
 	  "Name": "DeployActiveDirectory",
-	  "Type": "String",
+	  "Type": "Boolean",
 	  "TypeHint": "DeployActiveDirectory",
 	  "Description": "Whether or not AD setup already exists in the specified VNET"
 	},
@@ -223,7 +223,7 @@
     }
   ],
   "CloudServices": [
- {% if DeployActiveDirectory == 'Yes' -%}
+ {% if DeployActiveDirectory == 'true' -%}
 	{
       "Name": "{{ADCloudService}}",
       "AffinityGroup": "{{AffinityGroup}}",
@@ -284,7 +284,7 @@
             },
             "ConfigSets": [
               "DomainController"
-            ],as 
+            ],
             "DeploymentGroup": "ADGroup"
 		  }
 {% endfor -%}
