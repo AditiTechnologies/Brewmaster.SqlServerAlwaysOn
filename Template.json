@@ -233,7 +233,7 @@
         "Name": "72eaba00-1e74-4d7a-aaba-69af847e74ad",
         "VirtualNetwork": "{{VnetName}}",
         "VirtualMachines": [
-		  {
+		    {
             "Name": "root-dc1",
             "RoleSize": "{{ADVMSize}}",
             "Subnets": [
@@ -261,9 +261,9 @@
               "RootDomainController"
             ],
             "DeploymentGroup": "ADGroup"
-          },
+          }
 {% for i in (2..NumberOfADServers) -%}
-		  {
+		  ,{
 			"Name": "dc{{i}}",
 			"RoleSize":"{{ADVMSize}}",
 			"Subnets":[
@@ -341,9 +341,9 @@
 			  "FailoverCluster"
             ],
 			"DeploymentGroup": "SSAOGroup"
-        },
+        }
 {% for i in (1..NumberOfSQLNodes) -%}
-		{
+		,{
 			"Name": "sql{{i}}",
 			"RoleSize": "{{SQLVMSize}}",
 			"Subnets": [
@@ -377,7 +377,7 @@
 			  "SqlAlwaysOnNode"
             ],
 			"DeploymentGroup": "SSAOGroup"
-		},
+		}
 {% endfor -%}
 		],
 		"DiskStorageAccount": "{{DiskStore}}"
@@ -1069,7 +1069,7 @@
 				"[xSqlHADatabase]SetupAGDatabase"
 			],
 			"Description":null
-		},		
+		}		
 	  ]
 	}	
 	]
