@@ -30,7 +30,7 @@
 	{
 	  "Name": "DeployActiveDirectory",
 	  "Type": "Boolean",
-	  "TypeHint": "DeployActiveDirectory",
+	  "TypeHint": "boolean",
 	  "Description": "Whether or not AD setup already exists in the specified VNET"
 	},
 	{
