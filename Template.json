@@ -125,10 +125,10 @@
             "Maximum": 5
         },
         {
-            "Name": "SqlDbAdminName",
+            "Name": "SqlAdminPassword",
             "Type": "String",
-            "TypeHint": "username",
-            "Description": "Name of SQL DBA.",
+            "TypeHint": "password",
+            "Description": "Password for SQL sa account.",
             "Minimum": 1,
             "Maximum": 64
         },
