@@ -210,14 +210,14 @@
     },
     "AffinityGroup": {
         "Name": "{{AffinityGroup}}",
-        "Region": "East US",
-        "Label": "DSC created affinity group"
+        "Region": "{{Region}}",
+        "Label": ""
     },
     "StorageAccounts": [
         {
             "Name": "{{DiskStore}}",
             "AffinityGroup": "{{AffinityGroup}}",
-            "Region": "East US",
+            "Region": "{{Region}}",
             "Description": "A non-georedundant disk store",
             "DisableGeoReplication": true
         }
@@ -230,7 +230,6 @@
             "Region": "{{Region}}",
             "Description": "SSAO AD Setup",
             "Deployment": {
-                "Name": "72eaba00-1e74-4d7a-aaba-69af847e74ad",
                 "VirtualNetwork": "{{VnetName}}",
                 "VirtualMachines": [
                     {
@@ -310,7 +309,6 @@
             "Region": "{{Region}}",
             "Description": "SQL Server AlwaysOn deployment",
             "Deployment": {
-                "Name": "4213af4c-25f7-4015-8cbd-3a76f20cdf6c",
                 "VirtualNetwork": "{{VnetName}}",
                 "VirtualMachines": [
                     {
