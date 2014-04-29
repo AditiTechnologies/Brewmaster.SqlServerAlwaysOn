@@ -352,7 +352,7 @@
                         "AvailabilitySet": "sqlha-avs",
                         "OsVirtualDisk": {
                             "OsType": "Windows",
-                            "OsImageName": "fb83b3509582419d99629ce476bcb5c8__SQL-Server-2012SP1-CU5-11.0.3373.0-Enterprise-ENU-Win2012-CY13SU12"
+                            "OsImageName": "fb83b3509582419d99629ce476bcb5c8__*SQL-Server-2014*ENT*"
                         },
                         "DataVirtualDisks": [
                             {
