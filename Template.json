@@ -223,7 +223,7 @@
         }
     ],
     "CloudServices": [
-		{% if DeployActiveDirectory == 'true' -%}
+{% if DeployActiveDirectory == 'true' -%}
         {
             "Name": "{{ADCloudService}}",
             "AffinityGroup": "{{AffinityGroup}}",
@@ -262,7 +262,7 @@
                         ],
                         "DeploymentGroup": "ADGroup"
                     }
-					{% for i in (2..NumberOfADServers) -%}
+{% for i in (2..NumberOfADServers) -%}
                     ,{
                         "Name": "dc{{i}}",
                         "RoleSize": "{{ADVMSize}}",
@@ -287,7 +287,7 @@
                         ],
                         "DeploymentGroup": "ADGroup"
                     }
-					{% endfor -%}
+{% endfor -%}
                 ],
                 "DnsServers": [
                     {
@@ -298,7 +298,7 @@
                 "DiskStorageAccount": "{{DiskStore}}"
             }
         },
-		{% endif -%}
+{% endif -%}
         {
             "Name": "{{SSAOCloudService}}",
             "AffinityGroup": "{{AffinityGroup}}",
@@ -342,7 +342,7 @@
                         ],
                         "DeploymentGroup": "SSAOGroup"
                     }
-					{% for i in (1..NumberOfSQLNodes) -%}
+{% for i in (1..NumberOfSQLNodes) -%}
                     ,{
                         "Name": "sql{{i}}",
                         "RoleSize": "{{SQLVMSize}}",
@@ -378,7 +378,7 @@
                         ],
                         "DeploymentGroup": "SSAOGroup"
                     }
-					{% endfor -%}
+{% endfor -%}
                 ],
                 "DiskStorageAccount": "{{DiskStore}}"
             }
@@ -969,7 +969,7 @@
                     "Requires": [],
                     "Description": null
                 },
-				{
+                {
                     "Credential": "DomainAdmin:local",
                     "Type": "Script",
                     "ImportModule": null,
@@ -980,12 +980,12 @@
                     "TestScript": null,
                     "Args": {
                         "SQLNodeNamePrefix": "sql",
-						"LoadBalancerProbePort": "59999"
+                        "LoadBalancerProbePort": "59999"
                     },
                     "Nodes": [],
                     "Requires": [],
                     "Description": null
-                },				
+                },
                 {
                     "Credential": "DomainAdmin:local",
                     "Type": "Script",
@@ -1002,7 +1002,7 @@
                     "Requires": [
                         "[xFirewall]SqlServerTcpInRule",
                         "[xFirewall]SqlServerHAReplicaRule",
-						"[Script]SqlServerLoadBalancedEndpointRule",
+                        "[Script]SqlServerLoadBalancedEndpointRule"
                     ],
                     "Description": null
                 },
