@@ -67,16 +67,7 @@ function Set-TargetResource
 	
     try
     {
-        ($oldToken, $context, $newToken) = ImpersonateAs -cred $DomainAdministratorCredential  
-		
-		$LoadBalancerProbeRuleName = "SQL AG Listener LB Probe (TCP-In)($LoadBalancerProbePort)"
-        Import-Module NetSecurity -DisableNameChecking
-        if (!(Get-NetFirewallRule -DisplayName $LoadBalancerProbeRuleName -ErrorAction Ignore))
-        {
-	        Write-Verbose "Adding firewall rule '$LoadBalancerProbeRuleName'"
-	        New-NetFirewallRule -DisplayName $LoadBalancerProbeRuleName -Enabled True `
-		        -Action Allow -Direction Inbound -LocalPort $LoadBalancerProbePort -Protocol TCP -IcmpType Any | Out-Null
-        }
+        ($oldToken, $context, $newToken) = ImpersonateAs -cred $DomainAdministratorCredential			
 
 		$IPAddress = ([System.Net.DNS]::GetHostAddresses("$ServiceName.cloudapp.net")).IPAddressToString
 		If (!(Get-ClusterResource "IP Address $IPAddress" -ErrorAction SilentlyContinue))

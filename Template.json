@@ -969,6 +969,23 @@
                     "Requires": [],
                     "Description": null
                 },
+				{
+                    "Credential": "DomainAdmin:local",
+                    "Type": "Script",
+                    "ImportModule": null,
+                    "ImportTypeName": null,
+                    "Name": "SqlServerLoadBalancedEndpointRule",
+                    "GetScript": "@{ FirewallRuleName =  \"SQL AG Listener LB Probe (TCP-In)\" }",
+                    "SetScript": "$nodeName = $env:COMPUTERNAME\r\nIf($nodeName.IndexOf($SQLNodeNamePrefix, [System.StringComparison]::OrdinalIgnoreCase) -gt -1)\r\n{\r\n    $LoadBalancerProbeRuleName = \"SQL AG Listener LB Probe (TCP-In)($LoadBalancerProbePort)\"\r\n    Import-Module NetSecurity -DisableNameChecking\r\n    if (!(Get-NetFirewallRule -DisplayName $LoadBalancerProbeRuleName -ErrorAction Ignore))\r\n    {\r\n\t    Write-Verbose \"Adding firewall rule '$LoadBalancerProbeRuleName'\"\r\n\t    New-NetFirewallRule -DisplayName $LoadBalancerProbeRuleName -Enabled True `\r\n\t        -Action Allow -Direction Inbound -LocalPort $LoadBalancerProbePort -Protocol TCP -IcmpType Any | Out-Null\r\n    }\r\n}",
+                    "TestScript": null,
+                    "Args": {
+                        "SQLNodeNamePrefix": "sql",
+						"LoadBalancerProbePort": "59999"
+                    },
+                    "Nodes": [],
+                    "Requires": [],
+                    "Description": null
+                },				
                 {
                     "Credential": "DomainAdmin:local",
                     "Type": "Script",
@@ -984,7 +1001,8 @@
                     "Nodes": [],
                     "Requires": [
                         "[xFirewall]SqlServerTcpInRule",
-                        "[xFirewall]SqlServerHAReplicaRule"
+                        "[xFirewall]SqlServerHAReplicaRule",
+						"[Script]SqlServerLoadBalancedEndpointRule",
                     ],
                     "Description": null
                 },
