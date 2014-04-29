@@ -211,7 +211,7 @@
     "AffinityGroup": {
         "Name": "{{AffinityGroup}}",
         "Region": "{{Region}}",
-        "Label": ""
+        "Label": "Created by Brewmaster"
     },
     "StorageAccounts": [
         {
