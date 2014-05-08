@@ -119,11 +119,13 @@ function Set-TargetResource
     }
 	
 	Write-Verbose "Setting the Availability Group Listener port to [$PublicPort]"
-	$query = "ALTER AVAILABILITY GROUP $AvailabilityGroupName `
-				MODIFY LISTENER '$Name' `
-				( '
-					PORT = $PublicPort '
-				)"
+	$query = @"
+                ALTER AVAILABILITY GROUP $AvailabilityGroupName
+				MODIFY LISTENER '$Name'
+				(
+					PORT = $PublicPort
+				)
+"@
 				
 	Write-Verbose -Message "Query: $query"
 	$InstanceName = $env:COMPUTERNAME
