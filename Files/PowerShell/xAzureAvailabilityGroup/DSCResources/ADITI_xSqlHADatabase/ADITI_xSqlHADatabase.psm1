@@ -78,7 +78,7 @@ function Set-TargetResource
     foreach($db in $Database)
     {
         $role = [int] (osql -S . -U $sa -P $saPassword -Q "select role from sys.dm_hadr_availability_replica_states where is_local = 1" -h-1)[0]
-        $dbExists = [bool] [int](osql -S . -U $sa -P $saPassword -Q "select count(*) from master.sys.databases where name = '$DatabaseName'" -h-1)[0]
+        $dbExists = [bool] [int](osql -S . -U $sa -P $saPassword -Q "select count(*) from master.sys.databases where name = '$db'" -h-1)[0]
         $dbIsAddedToAg = [bool] [int](osql -S . -U $sa -P $saPassword -Q "select count(*) from sys.dm_hadr_database_replica_states inner join sys.databases on sys.databases.database_id = sys.dm_hadr_database_replica_states.database_id where sys.databases.name = '$db'" -h-1)[0]
 
         if($role -eq 1) # If PRIMARY replica
