@@ -1,14 +1,8 @@
 {
     "Name": "SQLServerAlwaysOn",
-    "Description": "Creates Sql server 2012 AlwaysOn deployment",
+    "Description": "Creates SQL Server 2014 AlwaysOn deployment.",
     "Version": "0.1.0",
     "Parameters": [
-        {
-            "Name": "VnetName",
-            "Type": "String",
-            "Description": "Name of Virtual Network",
-            "Default": "vnet"
-        },
         {
             "Name": "Region",
             "Type": "String",
@@ -19,20 +13,48 @@
             "Name": "AffinityGroup",
             "Type": "String",
             "TypeHint": "AzureAffinityGroupName",
-            "Description": "Name of Azure affinity group."
+            "Description": "Name of Azure affinity group. Will be created only if it does not already exists. If it exists then it should lie in the specified region."
+        },
+        {
+            "Name": "VnetName",
+            "Type": "String",
+            "Description": "Name of Windows Azure virtual network. Will be created only if it does not already exists. If it exists then it should lie in the specified affinity group."
+        },
+        {
+            "Name": "DiskStore",
+            "Type": "String",
+            "TypeHint": "AzureStorageName",
+            "Description": "Name of Azure storage account for creating VM disks. Will be created only if it does not already exists. If it exists then it should lie in the specified affinity group."
         },
         {
             "Name": "ADCloudService",
             "Type": "String",
             "TypeHint": "AzureCloudServiceName",
-            "Description": "Name of the Azure Cloud Service."
+            "Description": "Name of the Azure Cloud Service to which Active Directory VMs are to be deployed. Will be created only if it does not already exists. If it exists then it should lie in the specified affinity group."
+        },        
+        {
+            "Name": "FQDN",
+            "Type": "String",
+            "TypeHint": "domain",
+            "Description": "Fully qualified domain name for setting up active directory in the specified Azure Virtual Network.",
+            "Minimum": 1,
+            "Maximum": 64
         },
         {
-            "Name": "DeployActiveDirectory",
-            "Type": "Boolean",
-            "TypeHint": "boolean",
-            "Description": "Whether or not AD setup already exists in the specified VNET"
+            "Name": "Domain",
+            "Type": "String",
+            "TypeHint": "domain",
+            "Description": "NetBios domain name for setting up active directory in the specified Azure Virtual Network.",
+            "Minimum": 1,
+            "Maximum": 64
         },
+        {
+            "Name": "ADVMSize",
+            "Type": "String",
+            "TypeHint": "AzureRoleSize",
+            "Description": "Size of the Active Directory VMs.",
+            "Default": "Small"
+        },        
         {
             "Name": "SSAOCloudService",
             "Type": "String",
@@ -40,23 +62,39 @@
             "Description": "Name of the Azure Cloud Service."
         },
         {
-            "Name": "DiskStore",
+            "Name": "ClusterName",
             "Type": "String",
-            "TypeHint": "AzureStorageName",
-            "Description": "Name of Azure disk storage account."
+            "Description": "Name of Windows Failover Cluster (on top of which SQL Availability group will be created). This has to be unique in the domain(setup within the virtual network).",
+            "Minimum": 1,
+            "Maximum": 32
         },
         {
-            "Name": "ADVMSize",
+            "Name": "AvailabilityGroupName",
             "Type": "String",
-            "TypeHint": "AzureRoleSize",
-            "Description": "Size of the Active Directory server VMs.",
-            "Default": "Small"
+            "Description": "Name of SQL Server Availability Group. This has to be unique in the domain(setup within the virtual network).",
+            "Minimum": 1,
+            "Maximum": 32
+        },
+		{
+            "Name": "DatabaseName",
+            "Type": "String",
+            "Description": "Name of the database which is to be added to the SQL Server Availability Group.",
+            "Minimum": 1,
+            "Maximum": 64
+        },
+        {
+            "Name": "NumberOfSQLNodes",
+            "Type": "Number",
+            "Description": "No of SQL nodes. A minimum of two are required to create SQL Server Availability Group.",
+            "Default": 2,
+            "Minimum": 2,
+            "Maximum": 5
         },
         {
             "Name": "SQLVMSize",
             "Type": "String",
             "TypeHint": "AzureRoleSize",
-            "Description": "Size of the SQL VMs.",
+            "Description": "Size of the SQL VMs. The minimum recommended size is 'Large'.",
             "Default": "Large"
         },
         {
@@ -93,38 +131,6 @@
             "Maximum": 127
         },
         {
-            "Name": "Domain",
-            "Type": "String",
-            "TypeHint": "domain",
-            "Description": "NetBios domain name.",
-            "Minimum": 1,
-            "Maximum": 64
-        },
-        {
-            "Name": "FQDN",
-            "Type": "String",
-            "TypeHint": "domain",
-            "Description": "Fully qualified domain name",
-            "Minimum": 1,
-            "Maximum": 64
-        },
-        {
-            "Name": "NumberOfADServers",
-            "Type": "Number",
-            "Description": "No of AD servers",
-            "Default": 2,
-            "Minimum": 1,
-            "Maximum": 3
-        },
-        {
-            "Name": "NumberOfSQLNodes",
-            "Type": "Number",
-            "Description": "No of SQL nodes",
-            "Default": 2,
-            "Minimum": 2,
-            "Maximum": 5
-        },
-        {
             "Name": "SqlAdminPassword",
             "Type": "String",
             "TypeHint": "password",
@@ -148,28 +154,7 @@
             "MaskValue": true,
             "Minimum": 1,
             "Maximum": 64
-        },
-        {
-            "Name": "ClusterName",
-            "Type": "String",
-            "Description": "Name of SSAO failover cluster.",
-            "Minimum": 1,
-            "Maximum": 64
-        },
-        {
-            "Name": "AvailabilityGroupName",
-            "Type": "String",
-            "Description": "Name of SQL HA group name.",
-            "Minimum": 1,
-            "Maximum": 64
-        },
-        {
-            "Name": "DatabaseName",
-            "Type": "String",
-            "Description": "Name of SQL database.",
-            "Minimum": 1,
-            "Maximum": 64
-        }
+        }        
     ],
     "Network": {
         "DnsServers": [
@@ -202,7 +187,7 @@
                 ],
                 "DnsServers": [
                     "ad-dns1",
-                    "ad-dns2"
+					"ad-dns2"
                 ],
                 "VPNClientAddressSpaces": []
             }
@@ -223,14 +208,12 @@
         }
     ],
     "CloudServices": [
-{% if DeployActiveDirectory == 'true' -%}
         {
             "Name": "{{ADCloudService}}",
             "AffinityGroup": "{{AffinityGroup}}",
             "Region": "{{Region}}",
             "Description": "SSAO AD Setup",
-            "Deployment": {
-		"Name": "72eaba00-1e74-4d7a-aaba-69af847e74ad",
+            "Deployment": {                
                 "VirtualNetwork": "{{VnetName}}",
                 "VirtualMachines": [
                     {
@@ -261,15 +244,14 @@
                             "RootDomainController"
                         ],
                         "DeploymentGroup": "ADGroup"
-                    }
-{% for i in (2..NumberOfADServers) -%}
-                    ,{
-                        "Name": "dc{{i}}",
+                    },
+                    {
+                        "Name": "dc2",
                         "RoleSize": "{{ADVMSize}}",
                         "Subnets": [
                             "ad-subnet"
                         ],
-						"AvailabilitySet": "ad-avs",
+                        "AvailabilitySet": "ad-avs",
                         "OsVirtualDisk": {
                             "OsType": "Windows",
                             "OsImageName": "a699494373c04fc0bc8f2bb1389d6106__Windows-Server-2012-R2-*"
@@ -292,7 +274,6 @@
                         ],
                         "DeploymentGroup": "ADGroup"
                     }
-{% endfor -%}
                 ],
                 "DnsServers": [
                     {
@@ -303,14 +284,12 @@
                 "DiskStorageAccount": "{{DiskStore}}"
             }
         },
-{% endif -%}
         {
             "Name": "{{SSAOCloudService}}",
             "AffinityGroup": "{{AffinityGroup}}",
             "Region": "{{Region}}",
             "Description": "SQL Server AlwaysOn deployment",
-            "Deployment": {
-		"Name": "4213af4c-25f7-4015-8cbd-3a76f20cdf6c",
+            "Deployment": {                
                 "VirtualNetwork": "{{VnetName}}",
                 "VirtualMachines": [
                     {
@@ -434,15 +413,7 @@
                 "SetupADNode",
                 "SetupADDomainController"
             ]
-        },
-        {
-            "Name": "DomainNode",
-            "Description": "Domain node",
-            "Endpoints": [],
-            "ConfigurationIds": [
-                "DnsDependantNode"
-            ]
-        },
+        },        
         {
             "Name": "SSAONode",
             "Description": "All VMs within the SqlAlwaysOn deployment. This is typically made of the SQL nodes and a single quorum node.",
@@ -626,28 +597,7 @@
                 }
             ],
             "Args": {}
-        },
-        {
-            "Name": "DnsDependantNode",
-            "Description": "Reboots any DNS dependant nodes with Network issues. Should include any non-DNS nodes created prior to the DNS Server be installed.",
-            "Resources": [
-                {
-                    "Credential": null,
-                    "GetScript": "Test-NetConnection -InformationLevel Detailed",
-                    "SetScript": "\r\nif (!(Test-NetConnection -InformationLevel Quiet))\r\n{\r\n    if ((Get-ItemProperty -Path HKLM:\\SOFTWARE\\Aditi\\Brewmaster\\DnsDependantNode -ea Ignore).Rebooted)\r\n    {\r\n        Write-Warning 'Already rebooted once. Skipping this time.'\r\n        return\r\n    }\r\n\r\n    Write-Verbose 'Rebooting in order to resolve network issue.'\r\n    New-Item -Path HKLM:\\SOFTWARE\\Aditi\\Brewmaster -Force | Out-Null\r\n    Set-ItemProperty -Path HKLM:\\SOFTWARE\\Aditi\\Brewmaster\\DnsDependantNode -Name Rebooted -Value 1 -Type DWord\r\n    $global:DSCMachineStatus = 1\r\n}",
-                    "TestScript": "Test-NetConnection -InformationLevel Quiet",
-                    "Type": "Script",
-                    "ImportModule": null,
-                    "ImportTypeName": null,
-                    "Name": "CheckNetwork",
-                    "Args": {},
-                    "Nodes": [],
-                    "Requires": [],
-                    "Description": "Reboot if network (DNS) not working. Assumes that rebooting the VM will fix the DNS."
-                }
-            ],
-            "Args": {}
-        },
+        },        
         {
             "Name": "InitializeSSAONode",
             "Description": "Initializes VMs in the SqlServerAlwaysOn cloud service",
@@ -862,22 +812,7 @@
                     ],
                     "Requires": [],
                     "Description": null
-                },
-                {
-                    "Type": "xWaitForAzureCluster",
-                    "ImportModule": "xAzureFailOverCluster",
-                    "ImportTypeName": "ADITI_xWaitForAzureCluster",
-                    "Name": "WaitForFailoverCluster",
-                    "Args": {
-                        "Name": "{{ClusterName}}",
-                        "RetryIntervalSec": "%%10",
-                        "RetryCount": "%%100",
-                        "DomainAdministratorCredential": "%%New-Object PSCredential \"{{Domain}}\\{{AdminName}}\", (ConvertTo-SecureString \"{{AdminPassword}}\" -AsPlainText -Force)"
-                    },
-                    "Nodes": [],
-                    "Requires": [],
-                    "Description": null
-                },
+                },                
                 {
                     "Type": "xSmbShare",
                     "ImportModule": "xSmbShare",
@@ -897,24 +832,7 @@
                         "[xWaitForAzureCluster]WaitForFailoverCluster"
                     ],
                     "Description": null
-                },
-                {
-                    "Type": "xWaitForAzureClusterQuorumShare",
-                    "ImportModule": "xAzureFailOverCluster",
-                    "ImportTypeName": "ADITI_xWaitForAzureClusterQuorumShare",
-                    "Name": "WaitForClusterQuorumShare",
-                    "Args": {
-                        "QuorumShare": "\\\\quorum\\quorum",
-                        "RetryIntervalSec": "%%10",
-                        "RetryCount": "%%60",
-                        "DomainAdministratorCredential": "%%New-Object PSCredential \"{{Domain}}\\{{AdminName}}\", (ConvertTo-SecureString \"{{AdminPassword}}\" -AsPlainText -Force)"
-                    },
-                    "Nodes": [
-                        "{{SSAOCloudService}}.sql1"
-                    ],
-                    "Requires": [],
-                    "Description": null
-                },
+                },                
                 {
                     "Type": "xAzureClusterQuorumMode",
                     "ImportModule": "xAzureFailOverCluster",
@@ -1064,23 +982,7 @@
                         "[Script]CreateSqlAlwaysOnEndpoint"
                     ],
                     "Description": null
-                },
-                {
-                    "Type": "xWaitForSqlHAGroup",
-                    "ImportModule": "xAzureAvailabilityGroup",
-                    "ImportTypeName": "ADITI_xWaitForSqlHAGroup",
-                    "Name": "WaitForAvailabilityGroup",
-                    "Args": {
-                        "Name": "{{AvailabilityGroupName}}",
-                        "PrimaryReplicaInstanceName": "sql1",
-                        "RetryIntervalSec": "%%10",
-                        "RetryCount": "%%60",
-                        "SqlAdministratorCredential": "%%New-Object PSCredential \"sa\", (ConvertTo-SecureString \"{{SqlAdminPassword}}\" -AsPlainText -Force)"
-                    },
-                    "Nodes": [],
-                    "Requires": [],
-                    "Description": null
-                },
+                },                
                 {
                     "Type": "xSqlHADatabase",
                     "ImportModule": "xAzureAvailabilityGroup",
