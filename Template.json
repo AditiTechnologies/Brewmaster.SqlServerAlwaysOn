@@ -7,18 +7,18 @@
             "Name": "Region",
             "Type": "String",
             "TypeHint": "AzureRegionName",
-            "Description": "Name of Azure region."
+            "Description": "Azure region to which the infrastructure will be deployed."
         },
         {
             "Name": "AffinityGroup",
             "Type": "String",
             "TypeHint": "AzureAffinityGroupName",
-            "Description": "Name of Azure affinity group. Will be created only if it does not already exists. If it exists then it should lie in the specified region."
+            "Description": "Azure affinity group to which the infrastructure will be deployed."
         },
         {
             "Name": "VnetName",
             "Type": "String",
-            "Description": "Name of Windows Azure virtual network. Will be created only if it does not already exists. If it exists then it should lie in the specified affinity group."
+            "Description": "Azure Virtual Network for setting up SQL Server Availability Group."
         },
         {
             "Name": "DiskStore",
