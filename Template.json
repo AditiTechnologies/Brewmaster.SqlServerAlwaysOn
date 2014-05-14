@@ -812,7 +812,22 @@
                     ],
                     "Requires": [],
                     "Description": null
-                },                
+                },
+				{
+                    "Type": "xWaitForAzureCluster",
+                    "ImportModule": "xAzureFailOverCluster",
+                    "ImportTypeName": "ADITI_xWaitForAzureCluster",
+                    "Name": "WaitForFailoverCluster",
+                    "Args": {
+                        "Name": "{{ClusterName}}",
+                        "RetryIntervalSec": "%%10",
+                        "RetryCount": "%%100",
+                        "DomainAdministratorCredential": "%%New-Object PSCredential \"{{Domain}}\\{{AdminName}}\", (ConvertTo-SecureString \"{{AdminPassword}}\" -AsPlainText -Force)"
+                    },
+                    "Nodes": [],
+                    "Requires": [],
+                    "Description": null
+                },
                 {
                     "Type": "xSmbShare",
                     "ImportModule": "xSmbShare",
@@ -832,7 +847,24 @@
                         "[xWaitForAzureCluster]WaitForFailoverCluster"
                     ],
                     "Description": null
-                },                
+                },
+				{
+                    "Type": "xWaitForAzureClusterQuorumShare",
+                    "ImportModule": "xAzureFailOverCluster",
+                    "ImportTypeName": "ADITI_xWaitForAzureClusterQuorumShare",
+                    "Name": "WaitForClusterQuorumShare",
+                    "Args": {
+                        "QuorumShare": "\\\\quorum\\quorum",
+                        "RetryIntervalSec": "%%10",
+                        "RetryCount": "%%60",
+                        "DomainAdministratorCredential": "%%New-Object PSCredential \"{{Domain}}\\{{AdminName}}\", (ConvertTo-SecureString \"{{AdminPassword}}\" -AsPlainText -Force)"
+                    },
+                    "Nodes": [
+                        "{{SSAOCloudService}}.sql1"
+                    ],
+                    "Requires": [],
+                    "Description": null
+                },
                 {
                     "Type": "xAzureClusterQuorumMode",
                     "ImportModule": "xAzureFailOverCluster",
@@ -1002,7 +1034,23 @@
                         "[Script]CreateSqlAlwaysOnEndpoint"
                     ],
                     "Description": null
-                },                
+                },
+				{
+                    "Type": "xWaitForSqlHAGroup",
+                    "ImportModule": "xAzureAvailabilityGroup",
+                    "ImportTypeName": "ADITI_xWaitForSqlHAGroup",
+                    "Name": "WaitForAvailabilityGroup",
+                    "Args": {
+                        "Name": "{{AvailabilityGroupName}}",
+                        "PrimaryReplicaInstanceName": "sql1",
+                        "RetryIntervalSec": "%%10",
+                        "RetryCount": "%%60",
+                        "SqlAdministratorCredential": "%%New-Object PSCredential \"sa\", (ConvertTo-SecureString \"{{SqlAdminPassword}}\" -AsPlainText -Force)"
+                    },
+                    "Nodes": [],
+                    "Requires": [],
+                    "Description": null
+                },
                 {
                     "Type": "xSqlHADatabase",
                     "ImportModule": "xAzureAvailabilityGroup",
