@@ -828,7 +828,9 @@
                     "Nodes": [
                         "{{SSAOCloudService}}.quorum"
                     ],
-                    "Requires": [],
+                    "Requires": [
+                        "[xWaitForAzureCluster]WaitForFailoverCluster"
+                    ],
                     "Description": null
                 },                
                 {
@@ -843,7 +845,9 @@
                     "Nodes": [
                         "{{SSAOCloudService}}.sql1"
                     ],
-                    "Requires": [],
+                    "Requires": [
+                        "[xWaitForAzureClusterQuorumShare]WaitForClusterQuorumShare"
+                    ],
                     "Description": null
                 }
             ]
@@ -978,6 +982,26 @@
                         "[Script]CreateSqlAlwaysOnEndpoint"
                     ],
                     "Description": null
+                },
+				{
+                    "Type": "xSqlHAGroup",
+                    "ImportModule": "xAzureAvailabilityGroup",
+                    "ImportTypeName": "ADITI_xSqlHAGroup",
+                    "Name": "CreateAvailabilityGroup",
+                    "Args": {
+                        "Name": "{{AvailabilityGroupName}}",
+                        "NumberOfSQLNodes": "{{NumberOfSQLNodes}}",
+                        "SQLNodeNamePrefix": "sql",
+                        "EndpointPort": "%%5022",
+                        "SqlAdministratorCredential": "%%New-Object PSCredential \"sa\", (ConvertTo-SecureString \"{{SqlAdminPassword}}\" -AsPlainText -Force)"
+                    },
+                    "Nodes": [
+                        "{{SSAOCloudService}}.sql1"
+                    ],
+                    "Requires": [
+                        "[Script]CreateSqlAlwaysOnEndpoint"
+                    ],
+                    "Description": null
                 },                
                 {
                     "Type": "xSqlHADatabase",
@@ -992,7 +1016,7 @@
                     },
                     "Nodes": [],
                     "Requires": [
-                        "[xSqlHAGroup]CreateAvailabilityGroup"
+                        "[xWaitForSqlHAGroup]WaitForAvailabilityGroup"
                     ],
                     "Description": null
                 },
