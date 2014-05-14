@@ -995,26 +995,6 @@
                     ],
                     "Description": null
                 },
-                {
-                    "Type": "xSqlHAGroup",
-                    "ImportModule": "xAzureAvailabilityGroup",
-                    "ImportTypeName": "ADITI_xSqlHAGroup",
-                    "Name": "CreateAvailabilityGroup",
-                    "Args": {
-                        "Name": "{{AvailabilityGroupName}}",
-                        "NumberOfSQLNodes": "{{NumberOfSQLNodes}}",
-                        "SQLNodeNamePrefix": "sql",
-                        "EndpointPort": "%%5022",
-                        "SqlAdministratorCredential": "%%New-Object PSCredential \"sa\", (ConvertTo-SecureString \"{{SqlAdminPassword}}\" -AsPlainText -Force)"
-                    },
-                    "Nodes": [
-                        "{{SSAOCloudService}}.sql1"
-                    ],
-                    "Requires": [
-                        "[Script]CreateSqlAlwaysOnEndpoint"
-                    ],
-                    "Description": null
-                },
 				{
                     "Type": "xSqlHAGroup",
                     "ImportModule": "xAzureAvailabilityGroup",
