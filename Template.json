@@ -828,9 +828,7 @@
                     "Nodes": [
                         "{{SSAOCloudService}}.quorum"
                     ],
-                    "Requires": [
-                        "[xWaitForAzureCluster]WaitForFailoverCluster"
-                    ],
+                    "Requires": [],
                     "Description": null
                 },                
                 {
@@ -845,9 +843,7 @@
                     "Nodes": [
                         "{{SSAOCloudService}}.sql1"
                     ],
-                    "Requires": [
-                        "[xWaitForAzureClusterQuorumShare]WaitForClusterQuorumShare"
-                    ],
+                    "Requires": [],
                     "Description": null
                 }
             ]
@@ -996,7 +992,7 @@
                     },
                     "Nodes": [],
                     "Requires": [
-                        "[xWaitForSqlHAGroup]WaitForAvailabilityGroup"
+                        "[xSqlHAGroup]CreateAvailabilityGroup"
                     ],
                     "Description": null
                 },
