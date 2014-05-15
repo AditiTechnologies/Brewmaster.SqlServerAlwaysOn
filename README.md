@@ -8,6 +8,7 @@ Using the latest available image for SQL Server 2014 (Enterprise) in the azure g
 
 ###Limitations
 Following are the limitations of this template. Users can fork this repository and customize the template to fix them or wait for our periodic updates.
+> - The template does not allow selection of a image for the SQL VM.
 > - The template adds just a single data disk of 40 GB to the SQL VMs.
 > - The template only supports adding a single database (specified by the input parameter 'DatabaseName') to the availability group.
 > - The template does not support the scenario where Active Directory setup has already been performed in the specified Azure Virtual Network.
