@@ -8,7 +8,7 @@ Using the latest available image for SQL Server 2014 (Enterprise) in the azure g
 
 ###SQL Server Availability Group Connectivity
 
-The deployment does not create any additional SQL Server logins other than enabling 'sa' and setting its password to the deployment parameter <SqlAdminPassword>. While creating additonal SQL logins, please ensure that they are [synced](http://support.microsoft.com/kb/918992) across all the SQL VMs. To skip the process of syncing SQL logins, databases in the availability group can be enabled for [partial containmen](http://technet.microsoft.com/en-us/library/ff929071.aspx).
+The deployment does not create any additional SQL Server logins other than enabling 'sa' and setting its password to the deployment parameter <SqlAdminPassword>. While creating additonal SQL logins, please ensure that they are [synced](http://support.microsoft.com/kb/918992) across all the SQL VMs. To skip the process of syncing SQL logins, databases in the availability group can be enabled for [partial containment](http://technet.microsoft.com/en-us/library/ff929071.aspx).
 
 ####From Azure Cloud Service
 Create a one or more new subnets (for creating the Azure Cloud Service(s) that need access to the availability group) in the deployed Azure Virtual Network (specified by the deployment parameter <VnetName>). Use the connection string `Data Source=tcp:<AvailabilityGroupName>Listener,1433;Initial Catalog=<DatabaseName>;Uid=sa;Pwd=<SqlAdminPassword>;MultiSubnetFailover=True`
