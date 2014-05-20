@@ -21,7 +21,8 @@ function Get-TargetResource
         [ValidateRange(2,5)]
         [Uint32] $NumberOfSQLNodes,        
 
-        [UInt32] $EndpointPort = 5022,
+		[parameter(Mandatory)]        
+        [UInt32] $EndpointPort,
         
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
@@ -61,7 +62,8 @@ function Set-TargetResource
         [ValidateRange(2,5)]
         [Uint32] $NumberOfSQLNodes,        
 
-        [UInt32] $EndpointPort = 5022,
+		[parameter(Mandatory)]        
+        [UInt32] $EndpointPort,
         
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
@@ -148,7 +150,8 @@ function Test-TargetResource
         [ValidateRange(2,5)]
         [Uint32] $NumberOfSQLNodes,        
 
-        [UInt32] $EndpointPort = 5022,
+		[parameter(Mandatory)]        
+        [UInt32] $EndpointPort,
         
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
