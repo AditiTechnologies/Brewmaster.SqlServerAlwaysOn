@@ -237,7 +237,7 @@
                         "ConfigSets": [
                             "RootDomainController"
                         ],
-                        "DeploymentGroup": "ADGroup"
+                        "DeploymentGroup": "ADForest"
                     },
                     {
                         "Name": "dc2",
@@ -266,7 +266,7 @@
                         "ConfigSets": [
                             "DomainController"
                         ],
-                        "DeploymentGroup": "ADGroup"
+                        "DeploymentGroup": "ADDomainController"
                     }
                 ],
                 "DnsServers": [
@@ -318,7 +318,7 @@
                             "SSAONode",
                             "FailoverCluster"
                         ],
-                        "DeploymentGroup": "SSAOGroup"
+                        "DeploymentGroup": "SqlAlwaysOn"
                     }
 {% for i in (1..NumberOfSQLNodes) -%}
                     ,{
@@ -354,7 +354,7 @@
                             "FailoverCluster",
                             "SqlAlwaysOnNode"
                         ],
-                        "DeploymentGroup": "SSAOGroup"
+                        "DeploymentGroup": "SqlAlwaysOn"
                     }
 {% endfor -%}
                 ],
@@ -363,13 +363,17 @@
         }
     ],
     "DeploymentGroups": [
-        {
-            "Name": "ADGroup",
-            "Description": "Must fully deploy AD before deploying dependant VMs."
+		{
+            "Name": "ADForest",
+            "Description": "Must fully deploy AD forest root before any other domain controllers or domain VMs."
         },
         {
-            "Name": "SSAOGroup",
+            "Name": "SqlAlwaysOn",
             "Description": "SQL AlwaysOn VMs."
+        },
+		{
+            "Name": "ADDomainController",
+            "Description": "Additional AD domain controllers."
         }
     ],
     "Credentials": [
@@ -485,8 +489,7 @@
                         "LogPath": "%BrewmasterDir%\\Logs\\Install-GPMC.log"
                     }
                 }
-            ],
-            "Args": {}
+            ]
         },
         {
             "Name": "SetupADForest",
