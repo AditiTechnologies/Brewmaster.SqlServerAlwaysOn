@@ -916,7 +916,7 @@
                     "Name": "CreateSqlAlwaysOnEndpoint",
                     "GetScript": "@{ ServerInstance = $env:COMPUTERNAME; AllowedUser = $ServiceAccount; EndPointName = $EndPointName; PortNumber = $EndPointPort; Configured = [bool] [int](OSQL -S $InstanceName -E -Q \"select count(*) from master.sys.endpoints where name = '$EndPointName'\" -h-1)[0] }",
                     "SetScript": "\r\n$serverPath   = \"SQLSERVER:\\SQL\\$env:COMPUTERNAME\\Default\"\r\n$endpointPath = \"$serverPath\\Endpoints\\$EndpointName\"\r\nNew-SqlHadrEndpoint -Path $serverPath -Name $EndPointName -Port $EndPointPort -EA Stop | Out-Null\r\nWrite-Verbose \"Created Endpoint [$endpointName] on port [$endpointPort]\"\r\nSet-SqlHadrEndpoint -Path $endpointPath -State \"Started\" -EA Continue | Out-Null\r\nWrite-Verbose \"Starting Endpoint [$EndPointName] (if not already started)\"\r\nInvoke-SqlCmd -Query \"GRANT CONNECT ON ENDPOINT::[$EndPointName] TO [$SqlServiceAccount]\" -ServerInstance $env:COMPUTERNAME\r\nWrite-Verbose \"Granting endpoint connect permissions to [$SqlServiceAccount]\"",
-                    "TestScript": "$endpoint = OSQL -S $env:COMPUTERNAME -E -Q \"select count(*) from master.sys.endpoints where name = $EndPointName\" -h-1\r\nreturn ([bool] [int] $endpoint[0].Trim() )",
+                    "TestScript": "$endpoint = OSQL -S $env:COMPUTERNAME -E -Q \"select count(*) from master.sys.endpoints where name = '$EndPointName'\" -h-1\r\nreturn ([bool] [int] $endpoint[0].Trim() )",
                     "Args": {
 						"EndPointName": "MyMirroringEndpoint",
 						"EndPointPort": "%%5022",
