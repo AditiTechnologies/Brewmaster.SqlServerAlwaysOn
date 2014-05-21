@@ -872,19 +872,24 @@
                     }
                 },
                 {
-                    "Type": "xSqlAccessControl",
-                    "ImportModule": "xAzureAvailabilityGroup",
-                    "ImportTypeName": "ADITI_xSqlAccessControl",
+                    "Credential": "DomainAdmin:local",
+                    "Type": "Script",
+                    "ImportModule": null,
+                    "ImportTypeName": null,
                     "Name": "ConfigureSqlDbaAccount",
+                    "GetScript": "@{ SqlSvrAdminAcct = Invoke-SqlCmd -Query \"exec sp_helpsrvrolemember 'sysadmin'\" -ServerInstance '.' -EA Continue | where MemberName -eq 'sa' }",
+                    "SetScript": "[System.Reflection.Assembly]::LoadWithPartialName('Microsoft.SqlServer.SMO')\r\n$s = new-object ('Microsoft.SqlServer.Management.Smo.Server') $env:COMPUTERNAME\r\n$s.Settings.LoginMode = [Microsoft.SqlServer.Management.SMO.ServerLoginMode]::Mixed\r\n$s.Alter()\r\n$list = Get-Service -Name MSSQL*\r\nforeach ($s in $list)\r\n{\r\n   Set-Service -Name $s.Name -StartupType Automatic\r\n   if ($s.Status -ne \"Stopped\")\r\n   {\r\n       $s.Stop()\r\n       $s.WaitForStatus(\"Stopped\")\r\n       $s.Refresh()\r\n   }\r\n   if ($s.Status -ne \"Running\")\r\n   {\r\n      $s.Start()\r\n      $s.WaitForStatus(\"Running\")\r\n      $s.Refresh()\r\n   }\r\n}\r\nInvoke-SqlCmd -Query \"ALTER LOGIN sa ENABLE\" -ServerInstance \".\"\r\nInvoke-SqlCmd -Query \"ALTER LOGIN sa WITH PASSWORD = '$SqlAdminPassword'\" -ServerInstance \".\"\r\n",
+                    "TestScript": null,
                     "Args": {
-                        "LocalAdministratorCredential": "%%New-Object PSCredential \"$env:COMPUTERNAME\\{{AdminName}}\", (ConvertTo-SecureString \"{{AdminPassword}}\" -AsPlainText -Force)",
-						"SqlAdministratorCredential": "%%New-Object PSCredential \"sa\", (ConvertTo-SecureString \"{{SqlAdminPassword}}\" -AsPlainText -Force)"
+                        "SqlAdminPassword": "{{SqlAdminPassword}}"
                     },
+                    "Nodes": [],
                     "Requires": [
                         "[xFirewall]SqlServerTcpInRule",
                         "[xFirewall]SqlServerHAReplicaRule",
                         "[xFirewall]SqlServerLoadBalancedEndpointRule"
-                    ]
+                    ],
+                    "Description": "Enables SQL authentication and the built-in sa account"
                 },
                 {
                     "Type": "xSqlHAService",
@@ -897,23 +902,27 @@
                         "ServiceCredential": "%%New-Object PSCredential \"{{Domain}}\\{{SqlSvcAccountName}}\", (ConvertTo-SecureString \"{{AdminPassword}}\" -AsPlainText -Force)"
                     },
                     "Requires": [
-                        "[xSqlAccessControl]ConfigureSqlDbaAccount"
+                        "[Script]ConfigureSqlDbaAccount"
                     ]
                 },
-                {
-                    "Type": "xSqlHAEndPoint",
-                    "ImportModule": "xAzureAvailabilityGroup",
-                    "ImportTypeName": "ADITI_xSqlHAEndPoint",
+				{
+                    "Credential": "DomainAdmin:local",
+                    "Type": "Script",
+                    "ImportModule": null,
+                    "ImportTypeName": null,
                     "Name": "CreateSqlAlwaysOnEndpoint",
+                    "GetScript": "@{ ServerInstance = $env:COMPUTERNAME; AllowedUser = $ServiceAccount; EndPointName = $EndPointName; PortNumber = $EndPointPort; Configured = [bool] [int](OSQL -S $InstanceName -E -Q \"select count(*) from master.sys.endpoints where name = '$EndPointName'\" -h-1)[0] }",
+                    "SetScript": "\r\n$serverPath   = \"SQLSERVER:\\SQL\\$env:COMPUTERNAME\\Default\"\r\n$endpointPath = \"$serverPath\\Endpoints\\$EndpointName\"\r\nNew-SqlHadrEndpoint -Path $serverPath -Name $EndPointName -Port $EndPointPort -EA Stop | Out-Null\r\nWrite-Verbose \"Created Endpoint [$endpointName] on port [$endpointPort]\"\r\nSet-SqlHadrEndpoint -Path $endpointPath -State \"Started\" -EA Continue | Out-Null\r\nWrite-Verbose \"Starting Endpoint [$EndPointName] (if not already started)\"\r\nInvoke-SqlCmd -Query \"GRANT CONNECT ON ENDPOINT::[$EndPointName] TO [$SqlServiceAccount]\" -ServerInstance $env:COMPUTERNAME\r\nWrite-Verbose \"Granting endpoint connect permissions to [$SqlServiceAccount]\"",
+                    "TestScript": "$endpoint = OSQL -S $env:COMPUTERNAME -E -Q \"select count(*) from master.sys.endpoints where name = $EndPointName\" -h-1\r\nreturn ([bool] [int] $endpoint[0].Trim() )",
                     "Args": {
 						"EndPointName": "MyMirroringEndpoint",
 						"EndPointPort": "%%5022",
-						"SqlServerServiceAccount": "{{Domain}}\\{{SqlSvcAccountName}}",
-                        "LocalAdministratorCredential": "%%New-Object PSCredential \"$env:COMPUTERNAME\\{{AdminName}}\", (ConvertTo-SecureString \"{{AdminPassword}}\" -AsPlainText -Force)"
+                        "SqlServiceAccount": "{{Domain}}\\{{SqlSvcAccountName}}"
                     },
                     "Requires": [
                         "[xSqlHAService]EnableSqlAlwaysOn"
-                    ]
+                    ],
+                    "Description": "Creates SQL Server mirroring endpoint for participating in availability group."
                 },
 				{
                     "Type": "xSqlHAGroup",
@@ -931,7 +940,7 @@
                         "{{SSAOCloudService}}.sql1"
                     ],
                     "Requires": [
-                        "[xSqlHAEndPoint]CreateSqlAlwaysOnEndpoint"
+                        "[Script]CreateSqlAlwaysOnEndpoint"
                     ]
                 },
 				{

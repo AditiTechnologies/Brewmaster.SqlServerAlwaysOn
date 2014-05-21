@@ -9,13 +9,13 @@ function Get-TargetResource
 {
 	param
 	(	
+		[Parameter(Mandatory)]
+        [ValidateNotNullOrEmpty()]
+        [string] $SqlAdminPassword,
+		
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
-        [PSCredential] $LocalAdministratorCredential,
-        
-        [Parameter(Mandatory)]
-        [ValidateNotNullOrEmpty()]
-        [PSCredential] $SqlAdministratorCredential
+        [PSCredential] $LocalAdministratorCredential
   	)
     
 	$saAccount = $null
@@ -48,14 +48,12 @@ function Set-TargetResource
 	(             
 		[Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
-        [PSCredential] $LocalAdministratorCredential,
+        [string] $SqlAdminPassword,
 		
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
-        [PSCredential] $SqlAdministratorCredential
-  	)
-	
-    $saPassword = $SqlAdministratorCredential.GetNetworkCredential().Password    
+        [PSCredential] $LocalAdministratorCredential
+  	)	   
 	
 	try
     {
@@ -86,7 +84,7 @@ function Set-TargetResource
 		
 		# Enable the built-in 'sa' account
 		Invoke-SqlCmd -Query "ALTER LOGIN sa ENABLE" -ServerInstance "."
-		Invoke-SqlCmd -Query "ALTER LOGIN sa WITH PASSWORD = '$saPassword'" -ServerInstance "."
+		Invoke-SqlCmd -Query "ALTER LOGIN sa WITH PASSWORD = '$SqlAdminPassword'" -ServerInstance "."
     }
     finally
     {
@@ -108,11 +106,11 @@ function Test-TargetResource
 	(	
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
-        [PSCredential] $LocalAdministratorCredential,
-        
+        [string] $SqlAdminPassword,
+		
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
-        [PSCredential] $SqlAdministratorCredential
+        [PSCredential] $LocalAdministratorCredential
   	)    
 
     # Set-TargetResource is idempotent

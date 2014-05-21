@@ -11,10 +11,9 @@ function Get-TargetResource
 	(	
 		[parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
-		[string] $EndPointName
+		[string] $EndPointName,
 		
-		[parameter(Mandatory)]
-        [ValidateNotNullOrEmpty()]
+		[parameter(Mandatory)]        
 		[UInt32] $EndPointPort,
 		
 		[parameter(Mandatory)]
@@ -59,10 +58,9 @@ function Set-TargetResource
 	(		
 		[parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
-		[string] $EndPointName
+		[string] $EndPointName,
 		
-		[parameter(Mandatory)]
-        [ValidateNotNullOrEmpty()]
+		[parameter(Mandatory)]        
 		[UInt32] $EndPointPort,
 		
 		[parameter(Mandatory)]
@@ -109,10 +107,9 @@ function Test-TargetResource
 	(	
         [parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
-		[string] $EndPointName
+		[string] $EndPointName,
 		
-		[parameter(Mandatory)]
-        [ValidateNotNullOrEmpty()]
+		[parameter(Mandatory)]        
 		[UInt32] $EndPointPort,
 		
 		[parameter(Mandatory)]
