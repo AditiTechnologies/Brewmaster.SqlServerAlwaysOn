@@ -99,13 +99,13 @@ function Test-TargetResource
 		($oldToken, $context, $newToken) = ImpersonateAs -cred $DomainAdministratorCredential
         if (Test-Path $QuorumShare -PathType Container -ErrorAction Ignore)
         {
-			Write-Verbose -Message "Cluster quorum share $QuorumName"            
-            $false
+			Write-Verbose -Message "Cluster quorum share $QuorumName found... returning true .."            
+            $true
         }
         else
         {
-            Write-Verbose -Message "Cluster quorum share $QuorumShare not found"
-            $true
+            Write-Verbose -Message "Cluster quorum share $QuorumShare not found... returning false .."
+            $false
         }
     }
     catch
