@@ -666,7 +666,7 @@
                     "Name": "CreateSqlServiceDomainAccount",
                     "Args": {
                         "DomainName": "{{FQDN}}",
-                        "DomainAdministratorCredential": "%%New-Object PSCredential '{{Domain}}\\{{AdminName}}', (ConvertTo-SecureString '{{AdminPassword}}\' -AsPlainText -Force)",
+                        "DomainAdministratorCredential": "%%New-Object PSCredential '{{Domain}}\\{{AdminName}}', (ConvertTo-SecureString '{{AdminPassword}}' -AsPlainText -Force)",
                         "UserName": "{{SqlSvcAccountName}}",
                         "Password": "%%New-Object PSCredential '{{Domain}}\\{{SqlSvcAccountName}}', (ConvertTo-SecureString '{{SqlSvcAccountPassword}}' -AsPlainText -Force)",
                         "Ensure": "Present"
