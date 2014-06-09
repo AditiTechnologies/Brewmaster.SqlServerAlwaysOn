@@ -666,9 +666,9 @@
                     "Name": "CreateSqlServiceDomainAccount",
                     "Args": {
                         "DomainName": "{{FQDN}}",
-                        "DomainAdministratorCredential": "%%New-Object PSCredential \"{{Domain}}\\{{AdminName}}\", (ConvertTo-SecureString \"{{AdminPassword}}\" -AsPlainText -Force)",
+                        "DomainAdministratorCredential": "%%New-Object PSCredential '{{Domain}}\\{{AdminName}}', (ConvertTo-SecureString '{{AdminPassword}}\' -AsPlainText -Force)",
                         "UserName": "{{SqlSvcAccountName}}",
-                        "Password": "%%New-Object PSCredential \"{{Domain}}\\{{SqlSvcAccountName}}\", (ConvertTo-SecureString \"{{SqlSvcAccountPassword}}\" -AsPlainText -Force)",
+                        "Password": "%%New-Object PSCredential '{{Domain}}\\{{SqlSvcAccountName}}', (ConvertTo-SecureString '{{SqlSvcAccountPassword}}' -AsPlainText -Force)",
                         "Ensure": "Present"
                     },
                     "Nodes": [
@@ -755,7 +755,7 @@
                     "Args": {
                         "Name": "{{ClusterName}}",
                         "NumberOfSQLNodes": "%%{{NumberOfSQLNodes}}",
-                        "DomainAdministratorCredential": "%%New-Object PSCredential \"{{Domain}}\\{{AdminName}}\", (ConvertTo-SecureString \"{{AdminPassword}}\" -AsPlainText -Force)"
+                        "DomainAdministratorCredential": "%%New-Object PSCredential '{{Domain}}\\{{AdminName}}', (ConvertTo-SecureString '{{AdminPassword}}' -AsPlainText -Force)"
                     },
                     "Nodes": [
                         "{{SSAOCloudService}}.sql1"
@@ -770,7 +770,7 @@
                         "Name": "{{ClusterName}}",
                         "RetryIntervalSec": "%%10",
                         "RetryCount": "%%100",
-                        "DomainAdministratorCredential": "%%New-Object PSCredential \"{{Domain}}\\{{AdminName}}\", (ConvertTo-SecureString \"{{AdminPassword}}\" -AsPlainText -Force)"
+                        "DomainAdministratorCredential": "%%New-Object PSCredential '{{Domain}}\\{{AdminName}}', (ConvertTo-SecureString '{{AdminPassword}}' -AsPlainText -Force)"
                     }
                 },
                 {
@@ -801,7 +801,7 @@
                         "QuorumShare": "\\\\quorum\\quorum",
                         "RetryIntervalSec": "%%10",
                         "RetryCount": "%%60",
-                        "DomainAdministratorCredential": "%%New-Object PSCredential \"{{Domain}}\\{{AdminName}}\", (ConvertTo-SecureString \"{{AdminPassword}}\" -AsPlainText -Force)"
+                        "DomainAdministratorCredential": "%%New-Object PSCredential '{{Domain}}\\{{AdminName}}', (ConvertTo-SecureString '{{AdminPassword}}' -AsPlainText -Force)"
                     },
                     "Nodes": [
                         "{{SSAOCloudService}}.sql1"
@@ -814,7 +814,7 @@
                     "Name": "CreateClusterQuorumNode",
                     "Args": {
                         "QuorumShare": "\\\\quorum\\quorum",
-                        "DomainAdministratorCredential": "%%New-Object PSCredential \"{{Domain}}\\{{AdminName}}\", (ConvertTo-SecureString \"{{AdminPassword}}\" -AsPlainText -Force)"
+                        "DomainAdministratorCredential": "%%New-Object PSCredential '{{Domain}}\\{{AdminName}}', (ConvertTo-SecureString '{{AdminPassword}}' -AsPlainText -Force)"
                     },
                     "Nodes": [
                         "{{SSAOCloudService}}.sql1"
@@ -901,8 +901,8 @@
                     "Name": "EnableSqlAlwaysOn",
                     "Args": {
                         "InstanceName": "%%$env:COMPUTERNAME",
-                        "SqlAdministratorCredential": "%%New-Object PSCredential \"sa\", (ConvertTo-SecureString \"{{SqlAdminPassword}}\" -AsPlainText -Force)",
-                        "ServiceCredential": "%%New-Object PSCredential \"{{Domain}}\\{{SqlSvcAccountName}}\", (ConvertTo-SecureString \"{{AdminPassword}}\" -AsPlainText -Force)"
+                        "SqlAdministratorCredential": "%%New-Object PSCredential 'sa', (ConvertTo-SecureString '{{SqlAdminPassword}}' -AsPlainText -Force)",
+                        "ServiceCredential": "%%New-Object PSCredential '{{Domain}}\\{{SqlSvcAccountName}}', (ConvertTo-SecureString '{{AdminPassword}}' -AsPlainText -Force)"
                     },
                     "Requires": [
                         "[Script]ConfigureSqlDbaAccount"
@@ -937,7 +937,7 @@
                         "NumberOfSQLNodes": "{{NumberOfSQLNodes}}",
                         "SQLNodeNamePrefix": "sql",
                         "EndpointPort": "%%5022",
-                        "SqlAdministratorCredential": "%%New-Object PSCredential \"sa\", (ConvertTo-SecureString \"{{SqlAdminPassword}}\" -AsPlainText -Force)"
+                        "SqlAdministratorCredential": "%%New-Object PSCredential 'sa', (ConvertTo-SecureString '{{SqlAdminPassword}}' -AsPlainText -Force)"
                     },
                     "Nodes": [
                         "{{SSAOCloudService}}.sql1"
@@ -956,7 +956,7 @@
                         "PrimaryReplicaInstanceName": "sql1",
                         "RetryIntervalSec": "%%10",
                         "RetryCount": "%%60",
-                        "SqlAdministratorCredential": "%%New-Object PSCredential \"sa\", (ConvertTo-SecureString \"{{SqlAdminPassword}}\" -AsPlainText -Force)"
+                        "SqlAdministratorCredential": "%%New-Object PSCredential 'sa', (ConvertTo-SecureString '{{SqlAdminPassword}}' -AsPlainText -Force)"
                     }
                 },
                 {
@@ -968,7 +968,7 @@
                         "AvailabilityGroupName": "{{AvailabilityGroupName}}",
                         "Database": "{{DatabaseName}}",
                         "DatabaseBackupPath": "\\\\quorum\\backup",
-                        "SqlAdministratorCredential": "%%New-Object PSCredential \"sa\", (ConvertTo-SecureString \"{{SqlAdminPassword}}\" -AsPlainText -Force)"
+                        "SqlAdministratorCredential": "%%New-Object PSCredential 'sa', (ConvertTo-SecureString '{{SqlAdminPassword}}' -AsPlainText -Force)"
                     },
                     "Requires": [
                         "[xWaitForSqlHAGroup]WaitForAvailabilityGroup"
@@ -983,8 +983,8 @@
                         "Name": "{{AvailabilityGroupName}}Listener",
                         "ServiceName": "{{SSAOCloudService}}",
                         "AvailabilityGroupName": "{{AvailabilityGroupName}}",
-                        "SqlAdministratorCredential": "%%New-Object PSCredential \"sa\", (ConvertTo-SecureString \"{{SqlAdminPassword}}\" -AsPlainText -Force)",
-                        "DomainAdministratorCredential": "%%New-Object PSCredential \"{{Domain}}\\{{AdminName}}\", (ConvertTo-SecureString \"{{AdminPassword}}\" -AsPlainText -Force)"
+                        "SqlAdministratorCredential": "%%New-Object PSCredential 'sa', (ConvertTo-SecureString '{{SqlAdminPassword}}' -AsPlainText -Force)",
+                        "DomainAdministratorCredential": "%%New-Object PSCredential '{{Domain}}\\{{AdminName}}', (ConvertTo-SecureString '{{AdminPassword}}' -AsPlainText -Force)"
                     },
                     "Nodes": [
                         "{{SSAOCloudService}}.sql1"
