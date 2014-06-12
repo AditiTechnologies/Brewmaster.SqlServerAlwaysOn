@@ -56,9 +56,9 @@ function Set-TargetResource
 			
 		for ($count = 0; $count -lt $RetryCount; $count++)
 		{		
-			$cluster = Get-Cluster -Name $Name -Domain $ComputerInfo.Domain -ErrorAction Ignore
+			$cluster = Get-Cluster -ErrorAction Ignore
 
-			if ($cluster -ne $null)
+			if ($cluster -ne $null -and $cluster.Name -eq $Name)
 			{
 				Write-Verbose -Message "Found cluster $Name"
 				$clusterFound = $true

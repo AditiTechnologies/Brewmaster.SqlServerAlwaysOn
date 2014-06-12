@@ -29,13 +29,17 @@ function Get-TargetResource
     try
     {
         ($oldToken, $context, $newToken) = ImpersonateAs -cred $DomainAdministratorCredential
-        $cluster = Get-Cluster -Name $Name -Domain $ComputerInfo.Domain
-        if ($null -eq $cluster)
+        
+        $cluster = Get-Cluster -ErrorAction Ignore
+
+        if ($cluster -ne $null -and $cluster.Name -eq $Name)
+        {
+            $address = Get-ClusterGroup -Cluster $Name -Name "Cluster IP Address" | Get-ClusterParameter "Address"
+        }
+        else
         {
             throw "Can't find the cluster $Name"
         }
-
-        $address = Get-ClusterGroup -Cluster $Name -Name "Cluster IP Address" | Get-ClusterParameter "Address"
     }
     finally
     {
@@ -81,8 +85,8 @@ function Set-TargetResource
         {
             throw "Can't find machine's domain name"
         }
-        $cluster = Get-Cluster -Name $Name -Domain $ComputerInfo.Domain
-        if ($cluster)
+        $cluster = Get-Cluster -ErrorAction Ignore
+        if ($cluster -ne $null -and $cluster.Name -eq $Name)
         {
             $bCreate = $false     
         }
@@ -218,9 +222,9 @@ function Test-TargetResource
             {
                 ($oldToken, $context, $newToken) = ImpersonateAs -cred $DomainAdministratorCredential
          
-                $cluster = Get-Cluster -Name $Name -Domain $ComputerInfo.Domain -ErrorAction Ignore
+                $cluster = Get-Cluster -ErrorAction Ignore
 
-                if ($cluster)
+                if ($cluster -ne $null -and $cluster.Name -eq $Name)
                 {
 					Write-Verbose -Message "Cluster $Name is present"					                
 					
