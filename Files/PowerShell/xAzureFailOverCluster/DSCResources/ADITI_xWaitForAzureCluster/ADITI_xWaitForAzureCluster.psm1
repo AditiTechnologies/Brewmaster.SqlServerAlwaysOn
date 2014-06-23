@@ -45,24 +45,14 @@ function Set-TargetResource
 
     try
     {
-        ($oldToken, $context, $newToken) = ImpersonateAs -cred $DomainAdministratorCredential
-
-		$ComputerInfo = Get-WmiObject Win32_ComputerSystem
-		if (($ComputerInfo -eq $null) -or ($ComputerInfo.Domain -eq $null))
-		{
-			Write-Verbose -Message "Can't find machine's domain name"
-			break;
-		}
+        ($oldToken, $context, $newToken) = ImpersonateAs -cred $DomainAdministratorCredential        		
 			
 		for ($count = 0; $count -lt $RetryCount; $count++)
-		{		
-			$cluster = Get-Cluster -ErrorAction Ignore
-
-			if ($cluster -ne $null -and $cluster.Name -eq $Name)
+		{
+            $clusterFound = CheckIfClusterExists -ClusterName $Name
+			if ($clusterFound)
 			{
 				Write-Verbose -Message "Found cluster $Name"
-				$clusterFound = $true
-
 				break;
 			}
 				
@@ -80,7 +70,7 @@ function Set-TargetResource
         }
     }
 	
-	if (! $clusterFound)
+	if (!$clusterFound)
     {
         throw "Cluster $Name not found after $count attempts with $RetryIntervalSec sec interval"
     }
@@ -158,4 +148,28 @@ function CloseUserToken([IntPtr] $token)
     {
         throw "Can't close token"
     }
+}
+
+function CheckIfClusterExists([string] $ClusterName)
+{
+    $cluster = Get-Cluster -ErrorAction Ignore
+    if ($cluster -ne $null -and $cluster.Name -eq $ClusterName)
+    {
+        return $true
+    }
+    if($cluster -eq $null)
+    {
+        $ComputerInfo = Get-WmiObject Win32_ComputerSystem
+		if (($ComputerInfo -eq $null) -or ($ComputerInfo.Domain -eq $null))
+		{
+			Write-Verbose -Message "Can't find machine's domain name"
+			return $false;
+		}
+        $cluster = Get-Cluster -Name $ClusterName -Domain $ComputerInfo.Domain -ErrorAction Ignore
+        if($cluster -ne $null)
+        {
+            return $true
+        }
+    }
+    return $false
 }
