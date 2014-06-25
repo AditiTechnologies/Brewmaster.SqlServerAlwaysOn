@@ -1,5 +1,5 @@
 ﻿#
-# xSqlHAGroup: DSC resource to add database to a Sql High Availability (HA) Group.
+# xSqlHADatabase: DSC resource to add database to a Sql High Availability (HA) Group.
 #
 
 #
@@ -111,6 +111,8 @@ function Set-TargetResource
             # Restore DB if not exists
             if(!$dbExists)
             {
+                WaitForDatabase -DbName $db -DbBackupFolder $DatabaseBackupPath
+
                 $query = "restore database $db from disk = '$DatabaseBackupPath\$db.bak' with norecovery"
                 Write-Verbose -Message "Query: $query"
                 osql -S . -U $sa -P $saPassword -Q $query        
@@ -156,5 +158,33 @@ function Test-TargetResource
     # Set-TargetResource is idempotent
     return $false    
 }
+
+function WaitForDatabase
+{
+    param
+    (
+        [string] $DbBackupFolder,
+        [UInt64] $RetryIntervalSec = 60,
+        [UInt32] $RetryCount = 10,
+        [string] $DbName
+    )
+    $dbFound = $false
+    for ($count = 0; $count -lt $RetryCount; $count++)
+    {
+        if((Test-Path $DbBackupFolder\$DbName.bak) -and (Test-Path $DbBackupFolder\$DbName.log))
+        {
+            $dbFound = $true
+            break;
+        }
+        else
+        {
+            Start-Sleep -Seconds $RetryIntervalSec
+        }
+    }
+    if (!$dbFound)
+    {
+        throw "Database $DbName in backup folder $DbBackupFolder not found afater $RetryCount attempt with $RetryIntervalSec sec interval"
+    }
+} 
 
 Export-ModuleMember -Function *-TargetResource
