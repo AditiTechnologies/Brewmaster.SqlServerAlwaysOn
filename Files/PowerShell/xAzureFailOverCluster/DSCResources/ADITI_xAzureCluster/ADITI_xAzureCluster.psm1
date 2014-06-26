@@ -113,7 +113,7 @@ function Set-TargetResource
 
 				Write-Verbose "Bringing all cluster IP Addresses offline"
 				$AllClusterGroupIPs = $clusterGroup | Get-ClusterResource | Where {$_.ResourceType.Name -in "IP Address","IPv6 Tunnel Address","IPv6 Address"}
-				$AllClusterGroupIPs | Stop-ClusterResource | Out-Null
+				$AllClusterGroupIPs | Stop-ClusterResource -ErrorAction Ignore | Out-Null
 
 				Write-Verbose "Removing all IP addresses except first IP Address"
 				$IPv4ResourceName = ($AllClusterGroupIPs | Where {$_.ResourceType.Name -eq "IP Address"} | Select -First 1).Name
