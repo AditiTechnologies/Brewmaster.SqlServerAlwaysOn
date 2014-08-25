@@ -110,8 +110,8 @@
             "TypeHint": "password",
             "Description": "Password of local administrator account.",
             "MaskValue": true,
-            "Minimum": 8,
-            "Maximum": 127
+            "AllowedRegex": "^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$",
+			"AllowedDescription": "Complex password comprised of minimum 8 characters with atleast 1 alphabet, 1 number and 1 special character."
         },
         {
             "Name": "DSRMPassPhrase",
@@ -119,16 +119,16 @@
             "TypeHint": "password",
             "Description": "Safemode Password for domain",
             "MaskValue": true,
-            "Minimum": 8,
-            "Maximum": 127
+            "AllowedRegex": "^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$",
+			"AllowedDescription": "Complex password comprised of minimum 8 characters with atleast 1 alphabet, 1 number and 1 special character."
         },
         {
             "Name": "SqlAdminPassword",
             "Type": "String",
             "TypeHint": "password",
             "Description": "Password for SQL sa account.",
-            "Minimum": 1,
-            "Maximum": 64
+            "AllowedRegex": "^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$",
+			"AllowedDescription": "Complex password comprised of minimum 8 characters with atleast 1 alphabet, 1 number and 1 special character."
         },
         {
             "Name": "SqlSvcAccountName",
@@ -144,8 +144,8 @@
             "TypeHint": "password",
             "Description": "Password of SQL service account.",
             "MaskValue": true,
-            "Minimum": 1,
-            "Maximum": 64
+            "AllowedRegex": "^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$",
+			"AllowedDescription": "Complex password comprised of minimum 8 characters with atleast 1 alphabet, 1 number and 1 special character"
         }
 		{% assign fqdnSplit = FQDN | split: '.' -%}
 		{% assign Domain = fqdnSplit[0] -%}
