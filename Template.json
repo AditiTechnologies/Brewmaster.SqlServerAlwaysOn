@@ -110,7 +110,7 @@
             "TypeHint": "password",
             "Description": "Password of local administrator account.",
             "MaskValue": true,
-            "AllowedRegex": "^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$",
+            "AllowedRegex": "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,}$",
 			"AllowedDescription": "Complex password comprised of minimum 8 characters with atleast 1 alphabet, 1 number and 1 special character."
         },
         {
@@ -119,7 +119,7 @@
             "TypeHint": "password",
             "Description": "Safemode Password for domain",
             "MaskValue": true,
-            "AllowedRegex": "^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$",
+            "AllowedRegex": "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,}$",
 			"AllowedDescription": "Complex password comprised of minimum 8 characters with atleast 1 alphabet, 1 number and 1 special character."
         },
         {
@@ -127,7 +127,7 @@
             "Type": "String",
             "TypeHint": "password",
             "Description": "Password for SQL sa account.",
-            "AllowedRegex": "^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$",
+            "AllowedRegex": "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,}$",
 			"AllowedDescription": "Complex password comprised of minimum 8 characters with atleast 1 alphabet, 1 number and 1 special character."
         },
         {
@@ -144,7 +144,7 @@
             "TypeHint": "password",
             "Description": "Password of SQL service account.",
             "MaskValue": true,
-            "AllowedRegex": "^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$",
+            "AllowedRegex": "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,}$",
 			"AllowedDescription": "Complex password comprised of minimum 8 characters with atleast 1 alphabet, 1 number and 1 special character"
         }
 		{% assign fqdnSplit = FQDN | split: '.' -%}
