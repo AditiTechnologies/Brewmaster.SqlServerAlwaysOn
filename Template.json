@@ -219,7 +219,7 @@
                         "AvailabilitySet": "ad-avs",
                         "OsVirtualDisk": {
                             "OsType": "Windows",
-                            "OsImageName": "a699494373c04fc0bc8f2bb1389d6106__Windows-Server-2012-R2-*"
+                            "OsImageName": "a699494373c04fc0bc8f2bb1389d6106__Windows-Server-2012-R2-201408.01-en.us-127GB.vhd"
                         },
                         "DataVirtualDisks": [
                             {
@@ -248,7 +248,7 @@
                         "AvailabilitySet": "ad-avs",
                         "OsVirtualDisk": {
                             "OsType": "Windows",
-                            "OsImageName": "a699494373c04fc0bc8f2bb1389d6106__Windows-Server-2012-R2-*"
+                            "OsImageName": "a699494373c04fc0bc8f2bb1389d6106__Windows-Server-2012-R2-201408.01-en.us-127GB.vhd"
                         },
                         "DataVirtualDisks": [
                             {
@@ -295,7 +295,7 @@
                         "AvailabilitySet": "sqlha-avs",
                         "OsVirtualDisk": {
                             "OsType": "Windows",
-                            "OsImageName": "a699494373c04fc0bc8f2bb1389d6106__Windows-Server-2012-R2-*"
+                            "OsImageName": "a699494373c04fc0bc8f2bb1389d6106__Windows-Server-2012-R2-201408.01-en.us-127GB.vhd"
                         },
                         "DataVirtualDisks": [
                             {
@@ -330,7 +330,7 @@
                         "AvailabilitySet": "sqlha-avs",
                         "OsVirtualDisk": {
                             "OsType": "Windows",
-                            "OsImageName": "fb83b3509582419d99629ce476bcb5c8__*SQL-Server-2014*ENT*"
+                            "OsImageName": "fb83b3509582419d99629ce476bcb5c8__SQL-Server-2014-RTM-12.0.2361.0-Enterprise-ENU-Win2012R2-cy14su05"
                         },
                         "DataVirtualDisks": [
                             {
