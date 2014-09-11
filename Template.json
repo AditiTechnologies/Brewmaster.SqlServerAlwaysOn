@@ -902,7 +902,7 @@
                     "Args": {
                         "InstanceName": "%%$env:COMPUTERNAME",
                         "SqlAdministratorCredential": "%%New-Object PSCredential 'sa', (ConvertTo-SecureString '{{SqlAdminPassword}}' -AsPlainText -Force)",
-                        "ServiceCredential": "%%New-Object PSCredential '{{Domain}}\\{{SqlSvcAccountName}}', (ConvertTo-SecureString '{{AdminPassword}}' -AsPlainText -Force)"
+                        "ServiceCredential": "%%New-Object PSCredential '{{Domain}}\\{{SqlSvcAccountName}}', (ConvertTo-SecureString '{{SqlSvcAccountPassword}}' -AsPlainText -Force)"
                     },
                     "Requires": [
                         "[Script]ConfigureSqlDbaAccount"
