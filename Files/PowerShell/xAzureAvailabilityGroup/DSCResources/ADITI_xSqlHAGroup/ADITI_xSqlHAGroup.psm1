@@ -92,6 +92,7 @@ function Set-TargetResource
 
         Write-Verbose -Message "Creating SQL HAG $Name"        
         
+        $queryAdd = ""
         $query = @"
                     CREATE AVAILABILITY GROUP $Name
                         WITH (AUTOMATED_BACKUP_PREFERENCE = SECONDARY)
@@ -112,18 +113,18 @@ function Set-TargetResource
 		        $availabilityMode = $AsynchronousCommitAvailabilityMode
 	        }
 
-            $query = @"
-                        $query
+            $queryAdd = @"
+                        $queryAdd
                         '$SQLNodeNamePrefix$index' WITH
                         (
                             ENDPOINT_URL = 'TCP://${SQLNodeNamePrefix}${index}.${domain}:${EndpointPort}',
                             FAILOVER_MODE = $failoverMode,
-                            AVAILABILITY_MODE = $availabilityMode                            
+                            AVAILABILITY_MODE = $availabilityMode
                         ),
 "@
         }
 
-        $query = $query.TrimEnd(',')
+        $query = $query.Trim() + $queryAdd.TrimEnd(',').Trim()
         Write-Verbose -Message "Query: $query"
         
         # Create AG
