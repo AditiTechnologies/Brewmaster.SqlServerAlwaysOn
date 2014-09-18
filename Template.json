@@ -53,6 +53,11 @@
             "TypeHint": "AzureCloudServiceName",
             "Description": "Name of the Azure Cloud Service."
         },
+		{
+            "Name": "SSAOCloudServiceReservedIP",
+            "Type": "String",
+            "Description": "Name of Azure ReservedIP for SQL Server Availability Group Listener."
+        },
         {
             "Name": "ClusterName",
             "Type": "String",
@@ -185,7 +190,13 @@
                 ],
                 "VPNClientAddressSpaces": []
             }
-        ]
+        ],
+		"ReservedIPs": [
+			{
+				"Name": "{{SSAOCloudServiceReservedIP}}",
+				"Label": "Reserved IP address for the SSAO service"
+			}
+		]
     },
     "AffinityGroup": {
         "Name": "{{AffinityGroup}}",
@@ -285,6 +296,7 @@
             "Description": "SQL Server AlwaysOn deployment",
             "Deployment": {                
                 "VirtualNetwork": "{{VnetName}}",
+				"ReservedIP":"{{SSAOCloudServiceReservedIP}}",
                 "VirtualMachines": [
                     {
                         "Name": "quorum",
