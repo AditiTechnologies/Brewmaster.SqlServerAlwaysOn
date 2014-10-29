@@ -296,7 +296,7 @@
             "Description": "SQL Server AlwaysOn deployment",
             "Deployment": {                
                 "VirtualNetwork": "{{VnetName}}",
-				"ReservedIP":"{{SSAOCloudServiceReservedIP}}",
+		"ReservedIP":"{{SSAOCloudServiceReservedIP}}",
                 "VirtualMachines": [
                     {
                         "Name": "quorum",
