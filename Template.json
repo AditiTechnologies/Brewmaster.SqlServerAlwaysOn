@@ -31,7 +31,7 @@
             "Type": "String",
             "TypeHint": "AzureCloudServiceName",
             "Description": "Name of the Azure Cloud Service to which Active Directory VMs are to be deployed. Will be created only if it does not already exists. If it exists then it should lie in the specified affinity group."
-        },        
+        },
         {
             "Name": "FQDN",
             "Type": "String",
@@ -46,14 +46,14 @@
             "TypeHint": "AzureRoleSize",
             "Description": "Size of the Active Directory VMs.",
             "Default": "Small"
-        },        
+        },
         {
             "Name": "SSAOCloudService",
             "Type": "String",
             "TypeHint": "AzureCloudServiceName",
             "Description": "Name of the Azure Cloud Service."
         },
-		{
+        {
             "Name": "SSAOCloudServiceReservedIP",
             "Type": "String",
             "Description": "Name of Azure ReservedIP for SQL Server Availability Group Listener."
@@ -72,7 +72,7 @@
             "Minimum": 1,
             "Maximum": 32
         },
-		{
+        {
             "Name": "DatabaseName",
             "Type": "String",
             "Description": "Name of the database which is to be added to the SQL Server Availability Group.",
@@ -116,7 +116,7 @@
             "Description": "Password of local administrator account.",
             "MaskValue": true,
             "AllowedRegex": "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,}$",
-			"AllowedDescription": "Please provide a complex password comprised of minimum 8 characters with atleast 1 alphabet, 1 number and 1 special character."
+            "AllowedDescription": "Please provide a complex password comprised of minimum 8 characters with atleast 1 alphabet, 1 number and 1 special character."
         },
         {
             "Name": "DSRMPassPhrase",
@@ -125,7 +125,7 @@
             "Description": "Safemode Password for domain",
             "MaskValue": true,
             "AllowedRegex": "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,}$",
-			"AllowedDescription": "Please provide a complex password comprised of minimum 8 characters with atleast 1 alphabet, 1 number and 1 special character."
+            "AllowedDescription": "Please provide a complex password comprised of minimum 8 characters with atleast 1 alphabet, 1 number and 1 special character."
         },
         {
             "Name": "SqlAdminPassword",
@@ -133,7 +133,7 @@
             "TypeHint": "password",
             "Description": "Password for SQL sa account.",
             "AllowedRegex": "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,}$",
-			"AllowedDescription": "Please provide a complex password comprised of minimum 8 characters with atleast 1 alphabet, 1 number and 1 special character."
+            "AllowedDescription": "Please provide a complex password comprised of minimum 8 characters with atleast 1 alphabet, 1 number and 1 special character."
         },
         {
             "Name": "SqlSvcAccountName",
@@ -150,7 +150,7 @@
             "Description": "Password of SQL service account.",
             "MaskValue": true,
             "AllowedRegex": "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,}$",
-			"AllowedDescription": "Complex password comprised of minimum 8 characters with atleast 1 alphabet, 1 number and 1 special character"
+            "AllowedDescription": "Complex password comprised of minimum 8 characters with atleast 1 alphabet, 1 number and 1 special character"
         }
 		{% assign fqdnSplit = FQDN | split: '.' -%}
 		{% assign Domain = fqdnSplit[0] -%}
@@ -186,17 +186,17 @@
                 ],
                 "DnsServers": [
                     "ad-dns1",
-					"ad-dns2"
+                    "ad-dns2"
                 ],
                 "VPNClientAddressSpaces": []
             }
         ],
-		"ReservedIPs": [
-			{
-				"Name": "{{SSAOCloudServiceReservedIP}}",
-				"Label": "Reserved IP address for the SSAO service"
-			}
-		]
+        "ReservedIPs": [
+            {
+                "Name": "{{SSAOCloudServiceReservedIP}}",
+                "Label": "Reserved IP address for the SSAO service"
+            }
+        ]
     },
     "AffinityGroup": {
         "Name": "{{AffinityGroup}}",
@@ -211,14 +211,14 @@
             "Description": "A non-georedundant disk store",
             "DisableGeoReplication": true
         }
-    ],	
+    ],
     "CloudServices": [
         {
             "Name": "{{ADCloudService}}",
             "AffinityGroup": "{{AffinityGroup}}",
             "Region": "{{Region}}",
             "Description": "SSAO AD Setup",
-            "Deployment": {                
+            "Deployment": {
                 "VirtualNetwork": "{{VnetName}}",
                 "VirtualMachines": [
                     {
@@ -294,9 +294,9 @@
             "AffinityGroup": "{{AffinityGroup}}",
             "Region": "{{Region}}",
             "Description": "SQL Server AlwaysOn deployment",
-            "Deployment": {                
+            "Deployment": {
                 "VirtualNetwork": "{{VnetName}}",
-		"ReservedIP":"{{SSAOCloudServiceReservedIP}}",
+                "ReservedIP": "{{SSAOCloudServiceReservedIP}}",
                 "VirtualMachines": [
                     {
                         "Name": "quorum",
@@ -332,8 +332,8 @@
                         ],
                         "DeploymentGroup": "SqlAlwaysOn"
                     }
-{% for i in (1..NumberOfSQLNodes) -%}
-                    ,{
+                    {% for i in (1..NumberOfSQLNodes) -%}
+					,{
                         "Name": "sql{{i}}",
                         "RoleSize": "{{SQLVMSize}}",
                         "Subnets": [
@@ -368,14 +368,14 @@
                         ],
                         "DeploymentGroup": "SqlAlwaysOn"
                     }
-{% endfor -%}
+					{% endfor -%}
                 ],
                 "DiskStorageAccount": "{{DiskStore}}"
             }
         }
     ],
     "DeploymentGroups": [
-		{
+        {
             "Name": "ADForest",
             "Description": "Must fully deploy AD forest root before any other domain controllers or domain VMs."
         },
@@ -383,7 +383,7 @@
             "Name": "SqlAlwaysOn",
             "Description": "SQL AlwaysOn VMs."
         },
-		{
+        {
             "Name": "ADDomainController",
             "Description": "Additional AD domain controllers."
         }
@@ -423,7 +423,7 @@
                 "SetupADNode",
                 "SetupADDomainController"
             ]
-        },        
+        },
         {
             "Name": "SSAONode",
             "Description": "All VMs within the SqlAlwaysOn deployment. This is typically made of the SQL nodes and a single quorum node.",
@@ -468,7 +468,7 @@
             "Name": "SetupADNode",
             "Description": "Install AD Domain Services, Group Policy Management Console, and DNS.",
             "Resources": [
-				{
+                {
                     "Type": "xFormatDisks",
                     "ImportModule": "xAzureDataDisks",
                     "ImportTypeName": "ADITI_xFormatDisks",
@@ -579,13 +579,13 @@
                         "Name": "ADWS",
                         "StartupType": "Automatic",
                         "State": "Running"
-                    },                    
+                    },
                     "Requires": [
                         "[Script]SetupDC"
                     ]
                 }
             ]
-        },        
+        },
         {
             "Name": "InitializeSSAONode",
             "Description": "Initializes VMs in the SqlServerAlwaysOn cloud service",
@@ -773,7 +773,7 @@
                         "{{SSAOCloudService}}.sql1"
                     ]
                 },
-				{
+                {
                     "Type": "xWaitForAzureCluster",
                     "ImportModule": "xAzureFailOverCluster",
                     "ImportTypeName": "ADITI_xWaitForAzureCluster",
@@ -804,7 +804,7 @@
                         "[xWaitForAzureCluster]WaitForFailoverCluster"
                     ]
                 },
-				{
+                {
                     "Type": "xWaitForAzureClusterQuorumShare",
                     "ImportModule": "xAzureFailOverCluster",
                     "ImportTypeName": "ADITI_xWaitForAzureClusterQuorumShare",
@@ -871,7 +871,7 @@
                         "Direction": "Inbound"
                     }
                 },
-				{
+                {
                     "Type": "xFirewall",
                     "ImportModule": "xNetworking",
                     "ImportTypeName": "MSFT_xFirewall",
@@ -920,7 +920,7 @@
                         "[Script]ConfigureSqlDbaAccount"
                     ]
                 },
-				{
+                {
                     "Credential": "DomainAdmin:local",
                     "Type": "Script",
                     "ImportModule": null,
@@ -930,8 +930,8 @@
                     "SetScript": "\r\n$serverPath   = \"SQLSERVER:\\SQL\\$env:COMPUTERNAME\\Default\"\r\n$endpointPath = \"$serverPath\\Endpoints\\$EndpointName\"\r\nNew-SqlHadrEndpoint -Path $serverPath -Name $EndPointName -Port $EndPointPort -EA Stop | Out-Null\r\nWrite-Verbose \"Created Endpoint [$endpointName] on port [$endpointPort]\"\r\nSet-SqlHadrEndpoint -Path $endpointPath -State \"Started\" -EA Continue | Out-Null\r\nWrite-Verbose \"Starting Endpoint [$EndPointName] (if not already started)\"\r\nInvoke-SqlCmd -Query \"GRANT CONNECT ON ENDPOINT::[$EndPointName] TO [$SqlServiceAccount]\" -ServerInstance $env:COMPUTERNAME\r\nWrite-Verbose \"Granting endpoint connect permissions to [$SqlServiceAccount]\"",
                     "TestScript": "$endpoint = OSQL -S $env:COMPUTERNAME -E -Q \"select count(*) from master.sys.endpoints where name = '$EndPointName'\" -h-1\r\nreturn ([bool] [int] $endpoint[0].Trim() )",
                     "Args": {
-						"EndPointName": "MyMirroringEndpoint",
-						"EndPointPort": "%%5022",
+                        "EndPointName": "MyMirroringEndpoint",
+                        "EndPointPort": "%%5022",
                         "SqlServiceAccount": "{{Domain}}\\{{SqlSvcAccountName}}"
                     },
                     "Requires": [
@@ -939,7 +939,7 @@
                     ],
                     "Description": "Creates SQL Server mirroring endpoint for participating in availability group."
                 },
-				{
+                {
                     "Type": "xSqlHAGroup",
                     "ImportModule": "xAzureAvailabilityGroup",
                     "ImportTypeName": "ADITI_xSqlHAGroup",
@@ -958,7 +958,7 @@
                         "[Script]CreateSqlAlwaysOnEndpoint"
                     ]
                 },
-				{
+                {
                     "Type": "xWaitForSqlHAGroup",
                     "ImportModule": "xAzureAvailabilityGroup",
                     "ImportTypeName": "ADITI_xWaitForSqlHAGroup",
