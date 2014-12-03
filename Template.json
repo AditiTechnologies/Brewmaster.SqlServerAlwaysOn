@@ -145,44 +145,44 @@
   "ParameterMaps": [
     {
       "ParameterName": "ADCloudService",
-      "PackageName": "ad",
+      "TemplateName": "ad",
       "TemplateParameterName": "CloudService"
     },
     {
       "ParameterName": "ADVMSize",
-      "PackageName": "ad",
+      "TemplateName": "ad",
       "TemplateParameterName": "VMSize"
     },
 	{
       "ParameterName": "SQLAGCloudService",
-      "PackageName": "sqlag",
+      "TemplateName": "sqlag",
       "TemplateParameterName": "CloudService"
     },	
 	{
       "ParameterName": "SQLVMSize",
-      "PackageName": "sqlag",
+      "TemplateName": "sqlag",
       "TemplateParameterName": "VMSize"
     },
 	{
       "ParameterName": "AdminName",
-      "PackageName": "sqlag",
+      "TemplateName": "sqlag",
       "TemplateParameterName": "DomainJoinUserName"
     },
 	{
       "ParameterName": "AdminPassword",
-      "PackageName": "sqlag",
+      "TemplateName": "sqlag",
       "TemplateParameterName": "DomainJoinUserPassword"
     }
   ],
-  "Packages": [
+  "Templates": [
     {
       "Name": "ad",
-      "PackageId": "133b0572-3ae3-5a63-b484-0a6af9599fea",
+      "TemplateId": "133b0572-3ae3-5a63-b484-0a6af9599fea",
       "Commit": "master"
     },
     {
       "Name": "sqlag",
-      "PackageId": "1819a392-f0b7-593f-a79f-4015eb92bc26",
+      "TemplateId": "1819a392-f0b7-593f-a79f-4015eb92bc26",
       "Commit": "master"
     }
   ]
